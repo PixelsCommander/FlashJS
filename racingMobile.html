@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html style="height:100%">
+	<head>
+		<title>FlashJS racing</title>
+		<script src="js/jquery.js"></script>
+		<script src="js/FlashJS/flashStage.js"></script>
+		<script src="js/FlashJS/flashDisplayObject.js"></script>
+		<script src="js/FlashJS/flashUtils.js"></script>
+		<script src="js/FlashJS/flashEvents.js"></script>
+		<script src="js/FlashJS/flashTween.js"></script>
+		<script src="js/FlashJS/flashLoader.js"></script>
+		<script src="js/FlashJS/flashKeyboardManager.js"></script>
+		<script src="js/emile.js"></script>
+		<script src="js/underscore.js"></script>
+	</head>
+	<body background='assets/back.gif' style='height:100%; margin: 0px;'>
+		
+		<script>
+			
+			flash.initStage();
+			stage.debug = true;
+				
+			var map = new Loader('./assets/map.png');
+			map.width = 3328;
+			map.height = 4672;	
+			stage.addChild(map);
+				
+			var carObject = new car();
+			carObject.width = 32;
+			carObject.height = 46;
+			
+			stage.addChild(carObject);
+			carObject.x = 200;
+			carObject.y = 200;
+			carObject.initializePhyzics();
+			
+			var bridge = new Loader('./assets/bridge.png');
+			bridge.x = 704;
+			bridge.y = 1409;
+			stage.addChild(bridge);
+			
+			stage.addEventListener(Event.ENTER_FRAME, updateWorld);
+			stage.followForObject(carObject);
+			
+			function updateWorld(){
+				keyLeft = stage.mouseX < stage.width / 3;
+	            keyRight = stage.mouseX > stage.width - stage.width / 3;
+	            //the reason why these two are not capitilized any is because "keyUp" and"keyDown" are commands in flash
+	            keyup = true;
+	            keydown = KeyboardManager.isDown(KeyboardEvent.DOWN_CODE);
+	            
+	            // By pushing on certain keys, you get acceleration and decceleration
+	            if (keyup) {
+	                  carObject.tspeed += carObject.acceleration;
+	            }
+	            if (keydown) {
+	                  carObject.tspeed -= 1.5;
+	                  if (carObject.tspeed < -7.5) {
+	                        carObject.tspeed = -7.5;
+	                  }
+	            }
+	            // Friction from ground; this can be any small number so that the car doesn't keep going
+	            // if a key isn't pressed
+	            carObject.tspeed *= .40;
+	            // Velocity Change
+	            carObject.idealxvelocity = carObject.tspeed*Math.cos(carObject.angle*Math.PI/180);
+	            carObject.idealyvelocity = carObject.tspeed*Math.sin(carObject.angle*Math.PI/180);
+	            // By taking the difference between the current velocity and ideal velocity,
+	            // you get the actual velocity
+	            // When you apply the friction, you get the actual velocities.
+	            carObject.xvelocity += ((carObject.idealxvelocity-carObject.xvelocity)*carObject.tfriction);
+	            carObject.yvelocity += ((carObject.idealyvelocity-carObject.yvelocity)*carObject.tfriction);
+	            // By adding the velocities, you can get the new x and y positions
+	            carObject._x += carObject.xvelocity;
+	            carObject._y += carObject.yvelocity;
+	            // By pushing the Left and Right keys, the car steers in that direction
+	            if (keyLeft || keyRight) {
+	                  carObject.steering += (keyRight-keyLeft);
+	            } else {
+	                  // When you let go of the Left and Right keys, the car goes back to going straight
+	                  carObject.steering += ((carObject.steering<0)-(carObject.steering>0));
+	            }
+	            // You want to make sure that when you steer that it doesn't start turning faster and faster
+	            if (carObject.steering<-3) {
+	                  carObject.steering = -3;
+	            }
+	            if (carObject.steering>3) {
+	                  carObject.steering = 3;
+	            }
+	            // Now you can make the car turn based on actual speed and turning angle
+	            actualSpeed = Math.sqrt((carObject.xvelocity*carObject.xvelocity)+(carObject.yvelocity*carObject.yvelocity));
+	            carObject.angle += ((carObject.steering*actualSpeed)*.1);
+	            carObject._angle = (carObject.angle+360)%360-180;
+	            
+	            // You need to update the angles from radians to degrees so that it can turn
+	            carObject.rotation = (360 - carObject.angle + 270);
+	            carObject.x = carObject._x;
+	            carObject.y = carObject._y;
+	            
+	            if ((carObject.tspeed > .1) && (carObject.tspeed < 14)){
+	            	carObject.showSmoke();
+	            } else {
+	            	carObject.hideSmoke();
+	            }
+			}
+			
+			function car(){
+				object = new Loader('./assets/buggy.gif'); 
+				object.xvelocity = object.yvelocity=0;
+				object.tspeed = 0;
+			    object.angle = 0;
+			    object.tfriction = .025;
+			    object.steering = 0;
+			    object.acceleration = 21;
+			    
+			    
+			    object.smokes = object.addChild(new DisplayObject);
+			    object.smokes.y = 30;
+			    
+			    object.smokes.left = object.smokes.addChild(new Loader('./assets/smokeLeft.gif'));
+			    object.smokes.left.x = -20;
+			    object.smokes.left.y = -10;
+			    
+			    object.smokes.right = object.smokes.addChild(new Loader('./assets/smokeRight.gif'));
+			    object.smokes.right.x = 20;
+			    
+			    object.showSmoke = function (){
+			    	object.smokes.visible = true;
+			    }
+			    
+			    object.hideSmoke = function (){
+			    	object.smokes.visible = false;
+			    }
+			    
+			    object.initializePhyzics = function(){
+			    	object._x = object.x;
+			    	object._y = object.y;
+			    } 
+			    
+			    return object;
+			}
+					
+		</script>
+	</body>
+</html>
