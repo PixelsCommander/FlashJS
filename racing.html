@@ -43,22 +43,32 @@
 			stage.followForObject(carObject);
 			
 			function updateWorld(){
+				keySpace = KeyboardManager.isDown(KeyboardEvent.SPACEBAR_CODE);
 				keyLeft = KeyboardManager.isDown(KeyboardEvent.LEFT_CODE);
 	            keyRight = KeyboardManager.isDown(KeyboardEvent.RIGHT_CODE);
 	            //the reason why these two are not capitilized any is because "keyUp" and"keyDown" are commands in flash
 	            keyup = KeyboardManager.isDown(KeyboardEvent.UP_CODE);
 	            keydown = KeyboardManager.isDown(KeyboardEvent.DOWN_CODE);
 	            
-	            // By pushing on certain keys, you get acceleration and decceleration
-	            if (keyup) {
-	                  carObject.tspeed += carObject.acceleration;
-	            }
-	            if (keydown) {
-	                  carObject.tspeed -= 1.5;
-	                  if (carObject.tspeed < -7.5) {
-	                        carObject.tspeed = -7.5;
-	                  }
-	            }
+	            if (keySpace){	            	
+	            	if (carObject.steering > 0){
+	            		carObject.steering = 3.5;	
+	            	} else {
+	            		carObject.steering = -3.5;	 
+	            	}
+	            } else {
+	            	// By pushing on certain keys, you get acceleration and decceleration
+		            if (keyup) {
+		            	carObject.tspeed += carObject.acceleration;
+		            }
+		            if (keydown) {
+		                carObject.tspeed -= 1.5;
+		                if (carObject.tspeed < -7.5) {
+		                	carObject.tspeed = -7.5;
+		                }
+		            }	
+		        }
+		        
 	            // Friction from ground; this can be any small number so that the car doesn't keep going
 	            // if a key isn't pressed
 	            carObject.tspeed *= .40;
