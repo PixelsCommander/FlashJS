@@ -26,11 +26,18 @@ flash.display.DisplayObject = (function(window, undefined){
 		
 		object.angleCache = (0);
 		
+		object.childs = [];
+		
 		//Listeners initialization
 		object.mousemove( function(e) {
 		   object.mouseX = e.clientX; 
 		   object.mouseY = e.clientY;
 		 });
+		
+		//numChildren getter
+		object.__defineGetter__("numChildren", function(){
+			return this.childs.length;
+		});
 		
 		//X, Y getters / setters
 		object.__defineGetter__("x", function(){
@@ -108,8 +115,38 @@ flash.display.DisplayObject = (function(window, undefined){
 		});
 		
 		object.addChild = function(displayObject){
-			displayObject.appendTo(object);
+			displayObject.appendTo(this);
+			this.childs.push(displayObject);
 			return displayObject;	
+		}
+		
+		object.removeChildAt = function(index){
+			this.childs[index].remove();
+			delete this.childs[index];
+			this.childs.splice(index, 1);	
+		}
+		
+		object.removeChild = function(objectToDelete){
+			var childsLength = this.childs.length;
+			for (var i = 0; i < childsLength; i++){
+				if (this.childs[i] == objectToDelete){
+					this.removeChildAt(i);
+				}
+			}
+			delete objectToDelete;	
+		}
+		
+		object.getChildAt = function(index){
+			return object.childs[index];
+		}
+		
+		object.getChildByName = function(name){
+			var childsLength = this.childs.length;
+			for (var i = 0; i < childsLength; i++){
+				if (this.childs[i].name === name){
+					return object.childs[i];
+				}
+			}
 		}
 		
 		object.addEventListener = object.bind;
@@ -120,7 +157,8 @@ flash.display.DisplayObject = (function(window, undefined){
 		return object;	
 	}
 	
-	window.DisplayObject = DisplayObject; 	
+	window.DisplayObject = DisplayObject;
+	window.DisplayObject.prototype = DisplayObject.prototype; 	
 }(window)
 )
 

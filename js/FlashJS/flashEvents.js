@@ -19,6 +19,7 @@ flash.events.KeyboardEvent = {
 	DOWN_CODE : 40,
 	LEFT_CODE : 37,
 	RIGHT_CODE : 39,
+	SPACEBAR_CODE : 32
 }
 
 flash.extend(window.Event, flash.events.Event);

@@ -170,7 +170,7 @@ flash.display.Stage = (function(window, undefined){
 })(window)
 
 $(document).ready(function() {
-	  $("actionscript").each(function(index) {
+	  $("actionscript,flash").each(function(index) {
 	    flash.initStage(this.parent);
 	    var newElement = $("<script type='text/javascript'>" + this.textContent + "</" + "script>");
 		$(this).replaceWith(newElement);
