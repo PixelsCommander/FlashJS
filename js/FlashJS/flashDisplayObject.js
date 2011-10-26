@@ -34,85 +34,162 @@ flash.display.DisplayObject = (function(window, undefined){
 		   object.mouseY = e.clientY;
 		 });
 		
-		//numChildren getter
-		object.__defineGetter__("numChildren", function(){
-			return this.childs.length;
-		});
+		// Define getters and setters - functions shared by both standard-compatible and legacy browsers
+		// numChildren getter 
+		var objGetSet = new Object();
 		
-		//X, Y getters / setters
-		object.__defineGetter__("x", function(){
+		objGetSet.numChildrenGet = function(){
+			return this.childs.length;
+		}
+		
+		//X, Y  getters / setters
+		objGetSet.xGet = function(){
 			return parseInt(this.css('left'));
-		});
-		object.__defineSetter__("x", function(x){
+		}
+		objGetSet.xSet = function(x){
 			this.css('left', flash.utils.numToPx(x));
 			if (flash.stage != undefined && this === flash.stage.cameraTarget){
 				flash.stage.x = -x + flash.stage.width * 0.5;
 			}
-		});
-		object.__defineGetter__("y", function(){
+		}
+		objGetSet.yGet = function(){
 			return parseInt(this.css('top'));
-		});
-		object.__defineSetter__("y", function(x){
+		}
+		objGetSet.ySet = function(x){
+			//console.log("top" + this.css('top'));
 			this.css('top', flash.utils.numToPx(x));
 			if (flash.stage != undefined && this === flash.stage.cameraTarget){
 				flash.stage.y = -x + flash.stage.height * 0.5;
 			}
-		});
-		
+		}
+	
 		//Width and height getters / setters
-		object.__defineGetter__("width", function(){
+		objGetSet.widthGet = function(){
 			return parseInt(this.css('width'));
-		});
-		object.__defineSetter__("width", function(x){
+		}
+		objGetSet.widthSet = function(x){
 			this.css('width', flash.utils.numToPx(x));
-		});
-		object.__defineGetter__("height", function(){
+		}
+		objGetSet.heightGet = function(){
 			return parseInt(this.css('height'));
-		});
-		object.__defineSetter__("height", function(x){
+		}
+		objGetSet.heightSet = function(x){
 			this.css('height', flash.utils.numToPx(x));
-		});
+		}
 		
 		//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 
-		object.__defineGetter__("rotation", function(){
+		objGetSet.rotationGet = function(){
 			
 			this.angleCache = this.angleCache != undefined ? this.angleCache : 0; 
 			
 			return this.angleCache;
-		});
-		object.__defineSetter__("rotation", flash.display.rotationFunction);
+		}
 		
 		//Opacity
-		object.__defineGetter__("alpha", function(){
+		objGetSet.alphaGet = function(){
 			return this.css('opacity') * 100;
-		});
-		object.__defineSetter__("alpha", function(x){
+		}
+		objGetSet.alphaSet = function(x){
 			this.css('opacity', x / 100);
-		});
+		}
 		
 		//Fill color
-		object.__defineGetter__("fillColor", function(){
+		objGetSet.fillColorGet = function(){
 			return this.css('background-color');
-		});
-		object.__defineSetter__("fillColor", function(x){
+		}
+		objGetSet.fillColorSet = function(x){
 			this.css('background-color', x);
-		});
+		}
 		
 		//Visible
-		object.__defineGetter__("visible", function(){
+		objGetSet.visibleGet = function(){
 			if (this.css('display') === 'none'){
 				return false;
 			} else {
 				return true;
 			}
-		});
-		object.__defineSetter__("visible", function(x){
+		}
+		objGetSet.visibleSet = function(x){
 			if (x === true){
 				this.css('display', 'inline');
 			} else {
 				this.css('display', 'none');
 			}
-		});
+		}
+		
+		// Check for standards-compatible browser
+		if (Object.defineProperty)
+		{
+			
+			// For standards-based syntax
+			var DOMonly = false;
+			try
+			{
+				//numChildren getter
+				Object.defineProperty(object, "numChildren", { get: objGetSet.numChildrenGet, set: function(x){} });
+				
+				//X, Y  getters / setters
+				Object.defineProperty(object, "x", { get: objGetSet.xGet, set: objGetSet.xSet });
+				Object.defineProperty(object, "y", { get: objGetSet.yGet, set: objGetSet.ySet });
+
+				//Width and height getters / setters
+				Object.defineProperty(object, "width", { get: objGetSet.widthGet, set: objGetSet.widthSet });
+				Object.defineProperty(object, "height", { get: objGetSet.heightGet, set: objGetSet.heightSet });
+
+				//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 			
+				Object.defineProperty(object, "rotation", { get: objGetSet.rotationGet, set: flash.display.rotationFunction });
+				
+				// Opacity
+				Object.defineProperty(object, "alpha", { get: objGetSet.alphaGet, set: objGetSet.alphaSet });
+				
+				// Fill color
+				Object.defineProperty(object, "fillColor", { get: objGetSet.fillColorGet, set: objGetSet.fillColorSet });
+				
+				// Visible
+				Object.defineProperty(object, "visible", { get: objGetSet.visibleGet, set: objGetSet.visibleSet });
+			}
+			catch(e)
+			{
+				DOMonly = true;
+				}
+		}
+		else if (document.__defineGetter__)
+		{
+			// Use the legacy syntax
+			object.__defineGetter__("numChildren", objGetSet.numChildrenGet);
+			
+			//X, Y  getters / setters
+			object.__defineGetter__("x", objGetSet.xGet);
+			object.__defineSetter__("x", objGetSet.xSet);
+			object.__defineGetter__("y", objGetSet.yGet);
+			object.__defineSetter__("y", objGetSet.ySet);
+		
+			//Width and height getters / setters
+			object.__defineGetter__("width", objGetSet.widthGet);
+			object.__defineSetter__("width", objGetSet.widthSet);
+			object.__defineGetter__("height", objGetSet.heightGet);
+			object.__defineSetter__("height", objGetSet.heightSet);
+			
+			//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 
+			object.__defineGetter__("rotation", objGetSet.rotationGet);
+			object.__defineSetter__("rotation", flash.display.rotationFunction);
+			
+			//Opacity
+			object.__defineGetter__("alpha", objGetSet.alphaGet);
+			object.__defineSetter__("alpha", objGetSet.alphaSet);
+			
+			//Fill color
+			object.__defineGetter__("fillColor", objGetSet.fillColorGet);
+			object.__defineSetter__("fillColor", objGetSet.fillColorSet);
+			
+			//Visible
+			object.__defineGetter__("visible", objGetSet.visibleGet);
+			object.__defineSetter__("visible", objGetSet.visibleSet);		
+		}
+		else
+		{
+			// if neither defineProperty or __defineGetter__ is supported
+		}
 		
 		object.addChild = function(displayObject){
 			displayObject.appendTo(this);

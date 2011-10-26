@@ -66,11 +66,13 @@ flash.display.Stage = (function(window, undefined){
 			flash.stage.trigger(flash.events.Event.RESIZE);
 		});
 		
-		//Debug setter/getter
-		flash.stage.__defineGetter__("debug", function(){
+		flash.stage.debugGet = function(){
 			return flash.stage._debug;
-		});
-		flash.stage.__defineSetter__("debug", function(x){
+		}
+		
+		//Debug setter/getter
+		//First, define shared function used then by both standards-compatible and legacy syntax
+		flash.stage.debugSet = function(x){
 			if (flash.stage._debug === undefined){
 				//Debug panel
 				flash.stage.debugPanel = $('<div/>', {'id': 'debugPanelDiv' ,'style': 'color:#ffffff; position: absolute; width:100px; height:50px; background-color:#1c3c34;'});
@@ -102,7 +104,35 @@ flash.display.Stage = (function(window, undefined){
 				} else {
 					flash.stage.debugPanel.css('display','none');
 				}
-		});
+		}
+
+		if (Object.defineProperty)
+		{
+			// For standards-based syntax
+			var DOMonly = false;
+			try
+			{
+				Object.defineProperty(flash.stage, "debug", { 
+					get: flash.stage.debugGet, 
+					set: flash.stage.debugSet 
+				});
+			}
+			catch(e)
+			{
+				DOMonly = true;
+			}
+		}
+		else if (document.__defineGetter__)
+		{
+			// Use the legacy syntax
+			//Debug setter/getter
+			flash.stage.__defineGetter__("debug", flash.stage.debugGet);
+			flash.stage.__defineSetter__("debug", flash.stage.debugSet);
+		}
+		else
+		{
+			// if neither defineProperty or __defineGetter__ is supported
+		}
 		
 		//Keyboard hooks initialized
 		$(window).keydown(onkeydown);
@@ -159,6 +189,8 @@ flash.display.Stage = (function(window, undefined){
 			flash.display.rotationFunction = function(x){this.css('-moz-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;};
 		} else if ($.browser.opera){
 			flash.display.rotationFunction = function(x){this.css('-o-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;};
+		} else if ($.browser.msie){
+			flash.display.rotationFunction = function(x){this.css('-ms-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;}
 		}
 	}
 	
