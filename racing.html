@@ -52,9 +52,9 @@
 	            
 	            if (keySpace){	            	
 	            	if (carObject.steering > 0){
-	            		carObject.steering = 3.5;	
+	            		carObject.steering = 3.75;	
 	            	} else {
-	            		carObject.steering = -3.5;	 
+	            		carObject.steering = -3.75;	 
 	            	}
 	            } else {
 	            	// By pushing on certain keys, you get acceleration and decceleration
@@ -71,7 +71,11 @@
 		        
 	            // Friction from ground; this can be any small number so that the car doesn't keep going
 	            // if a key isn't pressed
-	            carObject.tspeed *= .40;
+	            if (keySpace){
+	            	carObject.tspeed *= .1;
+	            } else {
+	            	carObject.tspeed *= .40;
+	            }
 	            // Velocity Change
 	            carObject.idealxvelocity = carObject.tspeed*Math.cos(carObject.angle*Math.PI/180);
 	            carObject.idealyvelocity = carObject.tspeed*Math.sin(carObject.angle*Math.PI/180);
