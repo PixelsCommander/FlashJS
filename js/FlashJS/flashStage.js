@@ -105,34 +105,8 @@ flash.display.Stage = (function(window, undefined){
 					flash.stage.debugPanel.css('display','none');
 				}
 		}
-
-		if (Object.defineProperty)
-		{
-			// For standards-based syntax
-			var DOMonly = false;
-			try
-			{
-				Object.defineProperty(flash.stage, "debug", { 
-					get: flash.stage.debugGet, 
-					set: flash.stage.debugSet 
-				});
-			}
-			catch(e)
-			{
-				DOMonly = true;
-			}
-		}
-		else if (document.__defineGetter__)
-		{
-			// Use the legacy syntax
-			//Debug setter/getter
-			flash.stage.__defineGetter__("debug", flash.stage.debugGet);
-			flash.stage.__defineSetter__("debug", flash.stage.debugSet);
-		}
-		else
-		{
-			// if neither defineProperty or __defineGetter__ is supported
-		}
+		
+		defineGetterSetter(flash.stage, "debug", flash.stage.debugGet, flash.stage.debugSet);
 		
 		//Keyboard hooks initialized
 		$(window).keydown(onkeydown);
@@ -180,18 +154,20 @@ flash.display.Stage = (function(window, undefined){
 		}
 	}
 	
-	
-		
-	if (flash.display.rotationFunction === undefined) {
+	if (flash.display.cssTransformFunction === undefined) {
 		if ($.browser.webkit) {
-			flash.display.rotationFunction = function(x){this.css('-webkit-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;}
+			var browserTransformPrefix = ('-webkit-transform');
 		} else if ($.browser.mozilla){
-			flash.display.rotationFunction = function(x){this.css('-moz-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;};
+			var browserTransformPrefix = ('-moz-transform');
 		} else if ($.browser.opera){
-			flash.display.rotationFunction = function(x){this.css('-o-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;};
+			var browserTransformPrefix = ('-o-transform');
 		} else if ($.browser.msie){
-			flash.display.rotationFunction = function(x){this.css('-ms-transform', 'rotate(' + -x + 'deg)');this.angleCache = x;}
+			var browserTransformPrefix = ('-ms-transform');
 		}
+
+		flash.display.cssTransformFunction = function(angle, scalex, scaley){
+			this.css(browserTransformPrefix , 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')');this.angleCache = angle; this.scaleXCache = scalex;this.scaleYCache = scaley;
+			}
 	}
 	
 	flash.initStage = createStage;

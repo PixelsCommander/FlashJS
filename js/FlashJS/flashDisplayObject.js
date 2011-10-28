@@ -25,7 +25,8 @@ flash.display.DisplayObject = (function(window, undefined){
 		}
 		
 		object.angleCache = (0);
-		
+		object.scaleXCache = (1);
+		object.scaleYCache = (1);
 		object.childs = [];
 		
 		//Listeners initialization
@@ -79,10 +80,13 @@ flash.display.DisplayObject = (function(window, undefined){
 		
 		//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 
 		objGetSet.rotationGet = function(){
-			
 			this.angleCache = this.angleCache != undefined ? this.angleCache : 0; 
-			
 			return this.angleCache;
+		}
+		
+		objGetSet.rotationSet = function(angle){
+			this.angleCache = angle; 			
+			this.refreshCSSTransform();
 		}
 		
 		//Opacity
@@ -117,79 +121,58 @@ flash.display.DisplayObject = (function(window, undefined){
 			}
 		}
 		
-		// Check for standards-compatible browser
-		if (Object.defineProperty)
-		{
-			
-			// For standards-based syntax
-			var DOMonly = false;
-			try
-			{
-				//numChildren getter
-				Object.defineProperty(object, "numChildren", { get: objGetSet.numChildrenGet, set: function(x){} });
-				
-				//X, Y  getters / setters
-				Object.defineProperty(object, "x", { get: objGetSet.xGet, set: objGetSet.xSet });
-				Object.defineProperty(object, "y", { get: objGetSet.yGet, set: objGetSet.ySet });
-
-				//Width and height getters / setters
-				Object.defineProperty(object, "width", { get: objGetSet.widthGet, set: objGetSet.widthSet });
-				Object.defineProperty(object, "height", { get: objGetSet.heightGet, set: objGetSet.heightSet });
-
-				//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 			
-				Object.defineProperty(object, "rotation", { get: objGetSet.rotationGet, set: flash.display.rotationFunction });
-				
-				// Opacity
-				Object.defineProperty(object, "alpha", { get: objGetSet.alphaGet, set: objGetSet.alphaSet });
-				
-				// Fill color
-				Object.defineProperty(object, "fillColor", { get: objGetSet.fillColorGet, set: objGetSet.fillColorSet });
-				
-				// Visible
-				Object.defineProperty(object, "visible", { get: objGetSet.visibleGet, set: objGetSet.visibleSet });
-			}
-			catch(e)
-			{
-				DOMonly = true;
-				}
+		//ScaleX
+		objGetSet.scaleXGet = function(){
+			return this.scaleXCache;
 		}
-		else if (document.__defineGetter__)
-		{
-			// Use the legacy syntax
-			object.__defineGetter__("numChildren", objGetSet.numChildrenGet);
-			
-			//X, Y  getters / setters
-			object.__defineGetter__("x", objGetSet.xGet);
-			object.__defineSetter__("x", objGetSet.xSet);
-			object.__defineGetter__("y", objGetSet.yGet);
-			object.__defineSetter__("y", objGetSet.ySet);
 		
-			//Width and height getters / setters
-			object.__defineGetter__("width", objGetSet.widthGet);
-			object.__defineSetter__("width", objGetSet.widthSet);
-			object.__defineGetter__("height", objGetSet.heightGet);
-			object.__defineSetter__("height", objGetSet.heightSet);
-			
-			//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 
-			object.__defineGetter__("rotation", objGetSet.rotationGet);
-			object.__defineSetter__("rotation", flash.display.rotationFunction);
-			
-			//Opacity
-			object.__defineGetter__("alpha", objGetSet.alphaGet);
-			object.__defineSetter__("alpha", objGetSet.alphaSet);
-			
-			//Fill color
-			object.__defineGetter__("fillColor", objGetSet.fillColorGet);
-			object.__defineSetter__("fillColor", objGetSet.fillColorSet);
-			
-			//Visible
-			object.__defineGetter__("visible", objGetSet.visibleGet);
-			object.__defineSetter__("visible", objGetSet.visibleSet);		
+		objGetSet.scaleXSet = function(x){
+			this.scaleXCache = x;
+			this.refreshCSSTransform();
 		}
-		else
-		{
-			// if neither defineProperty or __defineGetter__ is supported
+		
+		//ScaleY
+		objGetSet.scaleYGet = function(){
+			return this.scaleYCache;
 		}
+		
+		objGetSet.scaleYSet = function(y){
+			this.scaleYCache = y;
+			this.refreshCSSTransform();
+		}
+		
+		
+		//numChildren getter
+		defineGetterSetter(object, "numChildren", objGetSet.numChildrenGet, function(x){});
+		
+		//X, Y  getters / setters
+		defineGetterSetter(object, "x", objGetSet.xGet, objGetSet.xSet);
+		defineGetterSetter(object, "y", objGetSet.yGet, objGetSet.ySet);
+
+		//Width and height getters / setters
+		defineGetterSetter(object, "width", objGetSet.widthGet, objGetSet.widthSet);
+		defineGetterSetter(object, "height", objGetSet.heightGet, objGetSet.heightSet);
+
+		//Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage 			
+		defineGetterSetter(object, "rotation", objGetSet.rotationGet, objGetSet.rotationSet);
+		
+		// Opacity
+		defineGetterSetter(object, "alpha", objGetSet.alphaGet, objGetSet.alphaSet);
+		
+		// Fill color
+		defineGetterSetter(object, "fillColor", objGetSet.fillColorGet, objGetSet.fillColorSet);
+		
+		// Visible
+		defineGetterSetter(object, "visible", objGetSet.visibleGet, objGetSet.visibleSet);
+		
+		// Scale
+		defineGetterSetter(object, "scaleX", objGetSet.scaleXGet, objGetSet.scaleXSet);
+		defineGetterSetter(object, "scaleY", objGetSet.scaleYGet, objGetSet.scaleYSet);
+		
+		//CSS transform refresh function to update rotation, scale and potentially skew
+		object.refreshCSSTransform = function(){
+			flash.display.cssTransformFunction.call(this, this.angleCache, this.scaleXCache, this.scaleYCache);	
+		} 
 		
 		object.addChild = function(displayObject){
 			displayObject.appendTo(this);
