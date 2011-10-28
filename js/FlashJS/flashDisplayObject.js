@@ -50,17 +50,17 @@ flash.display.DisplayObject = (function(window, undefined){
 		objGetSet.xSet = function(x){
 			this.css('left', flash.utils.numToPx(x));
 			if (flash.stage != undefined && this === flash.stage.cameraTarget){
-				flash.stage.x = -x + flash.stage.width * 0.5;
+				flash.stage.x = (-x + flash.stage.width * 0.5) * flash.stage.scaleX;
 			}
 		}
 		objGetSet.yGet = function(){
 			return parseInt(this.css('top'));
 		}
-		objGetSet.ySet = function(x){
+		objGetSet.ySet = function(y){
 			//console.log("top" + this.css('top'));
-			this.css('top', flash.utils.numToPx(x));
+			this.css('top', flash.utils.numToPx(y));
 			if (flash.stage != undefined && this === flash.stage.cameraTarget){
-				flash.stage.y = -x + flash.stage.height * 0.5;
+				flash.stage.y = (-y + flash.stage.height * 0.5) * flash.stage.scaleY;
 			}
 		}
 	
