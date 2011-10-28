@@ -166,7 +166,7 @@ flash.display.Stage = (function(window, undefined){
 		}
 
 		flash.display.cssTransformFunction = function(angle, scalex, scaley){
-			this.css(browserTransformPrefix , 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')');this.angleCache = angle; this.scaleXCache = scalex;this.scaleYCache = scaley;
+				this.css(browserTransformPrefix , 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')');//this.angleCache = angle; this.scaleXCache = scalex;this.scaleYCache = scaley;
 			}
 	}
 	

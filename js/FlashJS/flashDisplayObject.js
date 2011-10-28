@@ -174,6 +174,15 @@ flash.display.DisplayObject = (function(window, undefined){
 			flash.display.cssTransformFunction.call(this, this.angleCache, this.scaleXCache, this.scaleYCache);	
 		} 
 		
+		//Method for advanced users to setup scale and rotation CSS properties at once, 
+		//it would speed up your app in case you are using all transformations
+		object.setTransformAtOnce = function(angle, scaleX, scaleY){
+			this.angleCache = angle;
+			this.scaleX = scaleX;
+			this.scaleY = scaleY
+			flash.display.cssTransformFunction.call(this, this.angleCache, this.scaleXCache, this.scaleYCache);	
+		}
+		
 		object.addChild = function(displayObject){
 			displayObject.appendTo(this);
 			this.childs.push(displayObject);
