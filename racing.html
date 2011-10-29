@@ -3,6 +3,7 @@
 	<head>
 		<title>FlashJS racing</title>
 		<script src="js/jquery.js"></script>
+		<script src="js/getset.js"></script>
 		<script src="js/FlashJS/flashStage.js"></script>
 		<script src="js/FlashJS/flashDisplayObject.js"></script>
 		<script src="js/FlashJS/flashUtils.js"></script>
@@ -20,7 +21,8 @@
 			flash.initStage();
 			stage.debug = true;
 				
-			var map = new Loader('./assets/map.png');
+			var map = new DisplayObject();
+			map.addChild(new Loader('./assets/map.png'));
 			map.width = 3328;
 			map.height = 4672;	
 			stage.addChild(map);
