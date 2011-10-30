@@ -13,7 +13,7 @@ Usage
 
 You can use FlashJS for applications or game development.
 
-Start from analyzing watching example.
+Start from analyzing racing.html example.
 
 
 Bug tracker
