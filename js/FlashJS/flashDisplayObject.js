@@ -1,7 +1,5 @@
 flash.namespace('flash.display.DisplayObject');
 
-
-
 flash.display.DisplayObject = (function(window, undefined){
 	function DisplayObject(DOMObject){
 		
@@ -21,12 +19,21 @@ flash.display.DisplayObject = (function(window, undefined){
 		if(DOMObject){
 			var object = $(DOMObject);
 		} else {
-			var object = $('<div/>', {'id': _.uniqueId() ,'style': 'position: absolute;'});
+			try{
+				var objectsNumber = flash.stage.objectsNumber;
+			} catch(e){
+				var objectsNumber = -1;	
+			}
+			var object = $('<div/>', {'id': objectsNumber ,'style': 'position: absolute;'});
+			object.id = objectsNumber;
+			var objectsNumber = -1;
 		}
 		
 		object.angleCache = (0);
 		object.scaleXCache = (1);
 		object.scaleYCache = (1);
+		object.xCache = (0);
+		object.yCache = (0);
 		object.childs = [];
 		
 		//Listeners initialization
@@ -45,20 +52,19 @@ flash.display.DisplayObject = (function(window, undefined){
 		
 		//X, Y  getters / setters
 		objGetSet.xGet = function(){
-			return parseInt(this.css('left'));
+			return parseInt(this[0].style['left']);
 		}
 		objGetSet.xSet = function(x){
-			this.css('left', flash.utils.numToPx(x));
+			this[0].style['left']= flash.utils.numToPx(x);
 			if (flash.stage != undefined && this === flash.stage.cameraTarget){
 				flash.stage.x = (-x + flash.stage.width * 0.5) * flash.stage.scaleX;
 			}
 		}
 		objGetSet.yGet = function(){
-			return parseInt(this.css('top'));
+			return parseInt(this[0].style['top']);
 		}
 		objGetSet.ySet = function(y){
-			//console.log("top" + this.css('top'));
-			this.css('top', flash.utils.numToPx(y));
+			this[0].style['top'] = flash.utils.numToPx(y);
 			if (flash.stage != undefined && this === flash.stage.cameraTarget){
 				flash.stage.y = (-y + flash.stage.height * 0.5) * flash.stage.scaleY;
 			}
@@ -91,23 +97,23 @@ flash.display.DisplayObject = (function(window, undefined){
 		
 		//Opacity
 		objGetSet.alphaGet = function(){
-			return this.css('opacity') * 100;
+			return this[0].style['opacity'] * 100;
 		}
 		objGetSet.alphaSet = function(x){
-			this.css('opacity', x / 100);
+			this[0].style['opacity'] = x / 100;
 		}
 		
 		//Fill color
 		objGetSet.fillColorGet = function(){
-			return this.css('background-color');
+			return this[0].style['backgroundColor'];
 		}
 		objGetSet.fillColorSet = function(x){
-			this.css('background-color', x);
+			this[0].style['backgroundColor'] = x;
 		}
 		
 		//Visible
 		objGetSet.visibleGet = function(){
-			if (this.css('display') === 'none'){
+			if (this[0].style['display'] === 'none'){
 				return false;
 			} else {
 				return true;
@@ -115,9 +121,9 @@ flash.display.DisplayObject = (function(window, undefined){
 		}
 		objGetSet.visibleSet = function(x){
 			if (x === true){
-				this.css('display', 'inline');
+				this[0].style['display'] = 'inline';
 			} else {
-				this.css('display', 'none');
+				this[0].style['display'] = 'none';
 			}
 		}
 		
@@ -141,6 +147,51 @@ flash.display.DisplayObject = (function(window, undefined){
 			this.refreshCSSTransform();
 		}
 		
+		objGetSet.setMask = function(displayObject){
+			if (displayObject === undefined){
+				this.maskObject.isMask = false;
+				this.maskObject = undefined;
+				return;
+			}
+			
+			this.maskObject = displayObject;
+			this.maskObject.isMask = true;
+			
+			if (this.maskObject._graphics === undefined) return;
+			
+			var dataurl = this.maskObject._graphics.canvas.toDataURL();	
+			
+			if ((this.dataurl && this.dataurl.length !== dataurl.length) || this.dataurl === undefined) {
+			
+				this[0].style['-webkit-mask-box-image'] = 'url(' + dataurl + ')';
+				this.dataurl = dataurl;
+			/*
+				if (this.tempstyle1 === undefined) {
+					if (this.tempstyle2 !== undefined) {
+						this.tempstyle2.remove();
+						this.tempstyle2 = undefined;
+					}
+					this.tempstyle1 = $("<style type='text/css'> .tempstyle1{ -webkit-mask-box-image:" + 'url(' + dataurl + ')' + ";} </style>").appendTo("head");
+					this.className = 'tempstyle1';
+				} else {
+					this.tempstyle1.remove();
+					this.tempstyle1 = undefined;
+					this.tempstyle2 = $("<style type='text/css'> .tempstyle2{ -webkit-mask-box-image:" + 'url(' + dataurl + ')' + ";} </style>").appendTo("head");
+					this.className = 'tempstyle2';
+				}
+				
+			 */
+			}
+		}
+		
+		
+		
+		objGetSet.getMask = function(){
+			return this.maskObject;
+		}
+		
+		//Mask
+		defineGetterSetter(object, "mask", objGetSet.getMask, objGetSet.setMask);
 		
 		//numChildren getter
 		defineGetterSetter(object, "numChildren", objGetSet.numChildrenGet, function(x){});
@@ -168,6 +219,16 @@ flash.display.DisplayObject = (function(window, undefined){
 		// Scale
 		defineGetterSetter(object, "scaleX", objGetSet.scaleXGet, objGetSet.scaleXSet);
 		defineGetterSetter(object, "scaleY", objGetSet.scaleYGet, objGetSet.scaleYSet);
+		
+		//Graphics
+		// Visible
+		defineGetterSetter(object, "graphics", function(){
+			if (this._graphics === undefined){
+				return flash.display.Graphics(this);
+			} else {
+				return this._graphics;
+			}
+		}, function (x){});
 		
 		//CSS transform refresh function to update rotation, scale and potentially skew
 		object.refreshCSSTransform = function(){
@@ -219,6 +280,9 @@ flash.display.DisplayObject = (function(window, undefined){
 		}
 		
 		object.addEventListener = object.bind;
+		object.dispatchEvent = function (eventObject){
+			object.trigger(eventObject.type);
+		}
 		
 		object.x = 0;
 		object.y = 0;

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html style="height:100%">
+	<head>
+		<title>Smarty Dear</title>
+		<script src="js/jquery.js"></script>
+		<script src="js/getset.js"></script>
+		<script src="js/FlashJS/flashStage.js"></script>
+		<script src="js/FlashJS/flashDisplayObject.js"></script>
+		<script src="js/FlashJS/flashMovieClip.js"></script>
+		<script src="js/FlashJS/flashGraphics.js"></script>
+		<script src="js/FlashJS/flashUtils.js"></script>
+		<script src="js/FlashJS/flashEvents.js"></script>
+		<script src="js/FlashJS/flashTween.js"></script>
+		<script src="js/FlashJS/flashLoader.js"></script>
+		<script src="js/FlashJS/flashURLRequest.js"></script>
+		<script src="js/FlashJS/flashKeyboardManager.js"></script>
+		<script src="js/FlashJS/flashGenericPreloader.js"></script>
+		<script src="js/FlashJS/flashCollisionManager.js"></script>
+		<script src="js/emile.js"></script>
+	</head>
+	<body style='height:600px; width:760px; margin: 0px; background-image: url("images/back.jpg"); '>
+		<script>
+			
+			flash.initStage();
+			stage.debug = true;
+			stage.fillColor = 'transparent';
+			//stage.preloader = new GenericPreloader();
+			
+			stage.addEventListener(LoadingManagerEvent.ALL_COMPLETED, function(){
+				stage.preloader.remove();
+			});
+				
+			var map = new DisplayObject();
+			map.height = 4672;
+			map.width = 760;
+			
+			
+			var mapLoader = new Loader();
+			//mapLoader.addEventListener(Event.COMPLETE, function(){alert("Map loaded!");});
+			//mapLoader.addEventListener(IOErrorEvent.IO_ERROR, function(){alert("Map loading error!");});
+			
+			map.addChild(mapLoader);
+			mapLoader.load(new URLRequest("./assets/map1.html"));
+			stage.addChild(map);
+				
+			var characterObject = new character();
+			characterObject.width = 102;
+			characterObject.height = 132;
+			
+			stage.addChild(characterObject);
+			characterObject.x = 200;
+			characterObject.y = 1000;
+			
+			//characterObject.initializePhyzics();
+			
+			var collisionManager = new CollisionManager();
+			//collisionManager.addObject(bridge);
+			collisionManager.addObject(characterObject);
+			
+			collisionManager.collisionStart = function(objectA, objectB){ alert('Collision start'); };
+			collisionManager.collisionStop = function(objectA, objectB){ alert('Collision stop'); };
+			
+			
+			stage.addEventListener(Event.ENTER_FRAME, updateWorld);
+			stage.followForObject(characterObject);
+			
+			function updateWorld(){
+				keySpace = KeyboardManager.isDown(KeyboardEvent.SPACEBAR_CODE);
+				
+				if (keySpace) {
+					characterObject.y = characterObject.y - 5;
+				}
+			}
+			
+			function character(){
+				object = new MovieClip();
+				object.addChild(new Loader('./assets/character.png', undefined, true)); 
+				
+				object.xvelocity = object.yvelocity=0;
+				object.tspeed = 0;
+			    object.angle = 0;
+			    object.acceleration = 21;
+			         
+			    return object;
+			}
+					
+		</script>
+		
+		<div id="" class="scoreControl">
+			<a id="" class="button pause" href="#"></a>	
+			Score: <span id="" class="score">2012</span>
+		</div>
+        
+        <div style='display:none'>
+        <!--LiveInternet counter--><script type="text/javascript"><!--
+document.write("<a href='http://www.liveinternet.ru/click' "+
+"target=_blank><img src='//counter.yadro.ru/hit?t42.6;r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";"+Math.random()+
+"' alt='' title='LiveInternet' "+
+"border='0' width='31' height='31'><\/a>")
+//--></script><!--/LiveInternet-->
+
+    </div>	
+
+	</body>
+</html>
