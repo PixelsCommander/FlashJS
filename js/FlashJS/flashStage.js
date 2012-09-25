@@ -17,8 +17,7 @@ flash.namespace = function (ns_string) {
 	return parent;
 };
 flash.extend = function (destination, source) {
-  if (destination === undefined) destination = new Object();
-  if (destination !== undefined) {
+  if (destination != undefined) {
 	  for (var k in source) {
 	    if (source.hasOwnProperty(k)) {
 	      destination[k] = source[k];
@@ -148,51 +147,26 @@ flash.display.Stage = (function(window, undefined){
 		window.trace = function(text){
 			window.console.log(text);	
 		}
-
+	
 		//Camera follower
 		flash.stage.followForObject = function(object){
 			flash.stage.cameraTarget = object;	
-		}
-		
-		//Count for loaders to handle preloader
-		flash.stage.addActiveLoader = function(loader){
-			if (flash.stage.activeLoadersCount !== undefined){
-				flash.stage.activeLoadersCount++;	
-			} else {
-				flash.stage.activeLoadersCount = 0;
-			}
-			console.log("Active loaders: " + flash.stage.activeLoadersCount);
-		}
-		
-		flash.stage.removeActiveLoader = function(loader){
-			if (flash.stage.activeLoadersCount !== undefined){
-				flash.stage.activeLoadersCount--;
-				if (flash.stage.activeLoadersCount === 0) {
-					flash.stage.trigger(LoadingManagerEvent.ALL_COMPLETED);
-					console.log("There are no more active loaders!");
-				}	
-			} else {
-				flash.stage.activeLoadersCount = 0;
-			}
-			
-			console.log("Active loaders: " + flash.stage.activeLoadersCount);
 		}
 	}
 	
 	if (flash.display.cssTransformFunction === undefined) {
 		if ($.browser.webkit) {
-			var browserTransformPrefix = ('webkitTransform');
+			var browserTransformPrefix = ('-webkit-transform');
 		} else if ($.browser.mozilla){
-			var browserTransformPrefix = ('MozTransform');
+			var browserTransformPrefix = ('-moz-transform');
 		} else if ($.browser.opera){
-			var browserTransformPrefix = ('OTransform');
+			var browserTransformPrefix = ('-o-transform');
 		} else if ($.browser.msie){
 			var browserTransformPrefix = ('-ms-transform');
 		}
 
 		flash.display.cssTransformFunction = function(angle, scalex, scaley){
-				//this.css(browserTransformPrefix , 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')');//this.angleCache = angle; this.scaleXCache = scalex;this.scaleYCache = scaley;
-				this[0].style[browserTransformPrefix] = 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')';
+				this.css(browserTransformPrefix , 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')');//this.angleCache = angle; this.scaleXCache = scalex;this.scaleYCache = scaley;
 			}
 	}
 	

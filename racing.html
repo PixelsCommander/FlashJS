@@ -6,39 +6,25 @@
 		<script src="js/getset.js"></script>
 		<script src="js/FlashJS/flashStage.js"></script>
 		<script src="js/FlashJS/flashDisplayObject.js"></script>
-		<script src="js/FlashJS/flashMovieClip.js"></script>		
-		<script src="js/FlashJS/flashGraphics.js"></script>
 		<script src="js/FlashJS/flashUtils.js"></script>
 		<script src="js/FlashJS/flashEvents.js"></script>
 		<script src="js/FlashJS/flashTween.js"></script>
 		<script src="js/FlashJS/flashLoader.js"></script>
-		<script src="js/FlashJS/flashURLRequest.js"></script>
 		<script src="js/FlashJS/flashKeyboardManager.js"></script>
-		<script src="js/FlashJS/flashGenericPreloader.js"></script>
-		<script src="js/FlashJS/flashCollisionManager.js"></script>
 		<script src="js/emile.js"></script>
+		<script src="js/underscore.js"></script>
 	</head>
 	<body background='assets/back.gif' style='height:100%; margin: 0px;'>
+		
 		<script>
 			
 			flash.initStage();
 			stage.debug = true;
-			stage.preloader = new GenericPreloader();
-			
-			stage.addEventListener(LoadingManagerEvent.ALL_COMPLETED, function(){
-				stage.preloader.remove();
-			});
 				
 			var map = new DisplayObject();
-			map.height = 4672;
+			map.addChild(new Loader('./assets/map.png'));
 			map.width = 3328;
-			
-			var mapLoader = new Loader();
-			//mapLoader.addEventListener(Event.COMPLETE, function(){alert("Map loaded!");});
-			//mapLoader.addEventListener(IOErrorEvent.IO_ERROR, function(){alert("Map loading error!");});
-			
-			map.addChild(mapLoader);
-			mapLoader.load(new URLRequest("./assets/map.png"));
+			map.height = 4672;	
 			stage.addChild(map);
 				
 			var carObject = new car();
@@ -53,18 +39,7 @@
 			var bridge = new Loader('./assets/bridge.png');
 			bridge.x = 704;
 			bridge.y = 1409;
-			bridge.width = 192;
-			bridge.height = 320;
-			
 			stage.addChild(bridge);
-			
-			var collisionManager = new CollisionManager();
-			collisionManager.addObject(bridge);
-			collisionManager.addObject(carObject);
-			
-			collisionManager.collisionStart = function(objectA, objectB){ console.log('Collision start');};
-			collisionManager.collisionStop = function(objectA, objectB){ console.log('Collision stop');};
-			
 			
 			stage.addEventListener(Event.ENTER_FRAME, updateWorld);
 			stage.followForObject(carObject);
@@ -134,17 +109,15 @@
 	            carObject._angle = (carObject.angle+360)%360-180;
 	            
 	            // You need to update the angles from radians to degrees so that it can turn
-	            carObject.setrotation(360 - carObject.angle + 270);
-	            carObject.setx(carObject._x);
-	            carObject.sety(carObject._y);
+	            carObject.rotation = (360 - carObject.angle + 270);
+	            carObject.x = carObject._x;
+	            carObject.y = carObject._y;
 	            
 	            if ((carObject.tspeed > .1) && (carObject.tspeed < 14)){
 	            	carObject.showSmoke();
 	            } else {
 	            	carObject.hideSmoke();
 	            }
-	            
-	            collisionManager.step();
 			}
 			
 			function car(){
@@ -164,14 +137,8 @@
 			    object.smokes.left.x = -20;
 			    object.smokes.left.y = -10;
 			    
-			    object.smokes.left.width = 44;
-			    object.smokes.left.height = 71;
-			    
 			    object.smokes.right = object.smokes.addChild(new Loader('./assets/smokeRight.gif'));
 			    object.smokes.right.x = 20;
-			    
-			    object.smokes.right.width = 44;
-			    object.smokes.right.height = 71;
 			    
 			    object.showSmoke = function (){
 			    	object.smokes.visible = true;
