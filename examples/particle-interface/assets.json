@@ -1,0 +1,20 @@
+{
+    "assetsData":[
+        {
+            "url":"../../assets/%scale%/blueparticle.png",
+            "id":"particle1"
+        },
+        {
+            "url":"../../assets/%scale%/redparticle.png",
+            "id":"particle2"
+        },
+        {
+            "url":"../../assets/%scale%/orangeparticle.png",
+            "id":"particle3"
+        },
+        {
+            "url":"../../assets/%scale%/greenparticle.png",
+            "id":"particle4"
+        }
+    ]
+}

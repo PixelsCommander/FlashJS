@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="../../src/utils/Core-utils.js"></script>
+		<script src="../../src/geom/Matrix2D.js"></script>
+		<script src="../../src/display-canvas/DisplayObject.js"></script>
+		<script src="../../src/display-canvas/DisplayList.js"></script>
+		<script src="../../src/display-canvas/Stage.js"></script>
+		<script src="../../src/display-canvas/SpriteSheet.js"></script>
+		<script src="../../src/display-canvas/SpriteAnimation.js"></script>
+		<script src="../../src/events/Event.js"></script>
+		<script src="../../src/events/TouchEvent.js"></script>
+		<script src="../../src/loading/AnimationLoader.js"></script>
+		<script src="../../src/loading/ImageLoader.js"></script>
+		<script src="../../src/media/Sound.js"></script>
+		<script src="../../src/loading/SoundLoader.js"></script>
+		<script src="../../src/loading/Loader.js"></script>
+		<script src="../../src/loading/AssetsList.js"></script>
+        <script src="../../src/utils/ActionScriptTagExecutor.js"></script>
+	</head>
+	<body>
+        <actionscript width="200px" height="200px" scaletoscreen="false">
+            var loadCallback = function(){
+                for (var k = 0; k < 4; k++){
+                    for (var i = 0; i < 4; i++){
+                        var fish = new DisplayObject(assets.get('fish'));
+                        stage.addChild(fish);
+                        fish.x = fish.width * i;
+                        fish.y = fish.height * k;
+                    }
+                }
+
+                var player = new SpriteAnimation(assets.get('player'));
+                player.setAnimation('tornado', true);
+                stage.addChild(player);
+            }
+
+
+            var assets = new AssetsList({scale: stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", loadCallback);
+        </actionscript>
+        <p>
+            This scene is created with help of actionscript tag. It makes a bit simplier to start development and decrease amount of code needed from scratch.
+        </p>
+	</body>
+</html>
