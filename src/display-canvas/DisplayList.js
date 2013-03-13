@@ -66,7 +66,7 @@
 	}
 
 	p.removeChildByIndex = function(index){
-        this.childs[i].cleanListeners();
+        this.childs[index].cleanListeners();
 		this.childs.splice(index, 1);
 	}
 
