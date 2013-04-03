@@ -7,8 +7,8 @@
 */
 
 (function(w) {
-	var Stage = function(selector, baseWidth, baseHeight) {
-		this.enabled = true;
+	var Stage = function(selector, baseWidth, baseHeight, options) {
+        this.options = options || {};
 
 		this.canvas = typeof selector == 'string' ? document.querySelector(selector) : selector;
 
@@ -20,27 +20,32 @@
 
 		//TODO delete after TextField and onClick/HitTest would be implemented
 		if (this.canvas.leftOffset) this.leftOffset = this.canvas.leftOffset;
-		
-		this.baseWidth = baseWidth || 480;
-		this.baseHeight = baseHeight || 320;
 
-		this.resize();
-		
-		var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
-		var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
-		
-		var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
-        var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
+        this.baseWidth = baseWidth || 480;
+        this.baseHeight = baseHeight || 320;
 
-		this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
-		this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
-		this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
-		this.pixelScale = Math.min(4, this.pixelScale);
+        if (this.options.multiResolution === true || this.options.multiResolution === undefined){
+            this.resize();
 
-		this.width = this.canvas.width = this.baseWidth * this.pixelScale;
-		this.height = this.canvas.height = this.baseHeight * this.pixelScale;
+            var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
+            var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
 
-		this.canvas.pixelScale = this.pixelScale;
+            var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
+            var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
+
+            this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
+
+            this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
+            this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
+            this.pixelScale = Math.min(4, this.pixelScale);
+
+            this.canvas.pixelScale = this.pixelScale;
+        } else {
+            this.canvas.pixelScale = this.pixelScale = 1;
+        }
+
+        this.width = this.canvas.width = this.baseWidth * this.pixelScale;
+        this.height = this.canvas.height = this.baseHeight * this.pixelScale;
 
 		this.lastFrameTime = Date.now();
 
@@ -93,6 +98,7 @@
 		w.flash.initTouch(this);
 		
 		this.childs = [];
+        this.enabled = true;
 	}
 
 	var p = Stage.prototype = new DisplayList();
@@ -134,7 +140,7 @@
 	    var optimalRatio = Math.min(scaleToFitX, scaleToFitY);
 	    this.scale = this.canvas.scale = optimalRatio;
 
-	    //if (this.scaleToScreen === true){
+	    if (this.scaleToScreen === true){
 	    	if (currentScreenRatio >= 1.77 && currentScreenRatio <= 1.79) {
 		        this.canvas.style.width = containerWidth + "px";
 		        this.canvas.style.height = containerHeight + "px";
@@ -143,7 +149,7 @@
 		        this.canvas.style.width = this.baseWidth * optimalRatio + "px";
 		        this.canvas.style.height = this.baseHeight * optimalRatio + "px";
 		    }	
-	    //}
+	    }
 
 	    var leftOffset = (window.innerWidth - this.baseWidth * optimalRatio) / 2;
 	    this.leftOffset = this.canvas.leftOffset = leftOffset;

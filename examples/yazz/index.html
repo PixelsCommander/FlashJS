@@ -21,10 +21,10 @@
     <canvas id="yazzStage"></canvas>
 </body>
 <script>
-    var stage = new Stage('#yazzStage');
+    var stage = new Stage('#yazzStage', 800, 600, {multiResolution: false});
 
-    //This is absolutely bad practice to load Assets throught DisplayObject constructor. Please, use AssetsList instead. Look at Scaling assets example.
-    var testObject = new DisplayObject('http://www.rybaki.kz/cdata/jaz_/43.jpg');
+    //This is absolutely bad practice to load Assets throught DisplayObject constructor. Please, use AssetsList instead. Look at ScalingAssets example.
+    var testObject = new DisplayObject('../../assets/yazz.jpg');
 
     testObject.x = 100;
     testObject.y = 100;
