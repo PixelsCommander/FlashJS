@@ -21,8 +21,8 @@
 		var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
 		var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
 		
-		var windowWidth = window.innerWidth;
-		var widnowHeight = window.innerHeight;
+		var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
+        var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
 
 		this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
 		this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);

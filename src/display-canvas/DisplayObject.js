@@ -11,7 +11,13 @@
 		this.init();
 
 		if (image !== undefined) {
-            this.setImage(image, width, height);
+            if ((typeof image) === 'string'){
+                image = new ImageLoader(image, undefined, (function(){
+                    this.setImage(image, width, height);
+                }).bind(this));
+            } else {
+                this.setImage(image);
+            }
 		}
 
         if (stage !== undefined){
@@ -77,7 +83,7 @@
     p.updateMaxZIndex = function(zindex, object){
         if (this._stage !== undefined) {
             if (zindex === undefined) zindex = this.zindexCache;
-            this._stage.maxzindex = Math.max(this._stage.maxzindex, zindex);
+            this._stage.maxzindex = Math.max(this._stage.maxzindex, zindex + 1);
         }
     }
 
@@ -134,6 +140,9 @@
 
         this.cacheCanvas.width = this._originalWidth;
         this.cacheCanvas.height = this._originalHeight;
+
+        this.regX = this.cacheCanvas.width / 2;
+        this.regY = this.cacheCanvas.height / 2;
 
         var ctx = this.cacheCanvas.getContext('2d');
         ctx.drawImage(image, 0, 0, this._originalWidth, this._originalHeight);
@@ -260,7 +269,7 @@
 		
 		tempObject.x = object.x;
 		tempObject.y = object.y;
-		tempObject.zindex = object.zindex;
+		tempObject.zIndex = object.zIndex;
 		tempObject.data = object;
 
 		return tempObject;

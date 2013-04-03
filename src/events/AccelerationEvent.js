@@ -7,7 +7,7 @@
  */
 
 (function(w){
-    if (w.DeviceMotionEvent != undefined) {
+    if (w.DeviceMotionEvent !== undefined && w.flash.iOS === true) {
         w.flash.accelerometer = w.flash.accelerometer || {};
         w.flash.accelerometer.noiseBarrier = 0.2;
         w.addEventListener('devicemotion', function(e) {

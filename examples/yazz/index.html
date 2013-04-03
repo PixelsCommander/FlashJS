@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../../src/utils/Core-utils.js"></script>
+    <script src="../../src/geom/Matrix2D.js"></script>
+    <script src="../../src/display-canvas/DisplayObject.js"></script>
+    <script src="../../src/display-canvas/DisplayList.js"></script>
+    <script src="../../src/display-canvas/Stage.js"></script>
+    <script src="../../src/display-canvas/SpriteSheet.js"></script>
+    <script src="../../src/display-canvas/SpriteAnimation.js"></script>
+    <script src="../../src/events/Event.js"></script>
+    <script src="../../src/events/TouchEvent.js"></script>
+    <script src="../../src/loading/AnimationLoader.js"></script>
+    <script src="../../src/loading/ImageLoader.js"></script>
+    <script src="../../src/media/Sound.js"></script>
+    <script src="../../src/loading/SoundLoader.js"></script>
+    <script src="../../src/loading/Loader.js"></script>
+    <script src="../../src/loading/AssetsList.js"></script>
+</head>
+<body>
+    <canvas id="yazzStage"></canvas>
+</body>
+<script>
+    var stage = new Stage('#yazzStage');
+
+    //This is absolutely bad practice to load Assets throught DisplayObject constructor. Please, use AssetsList instead. Look at Scaling assets example.
+    var testObject = new DisplayObject('http://www.rybaki.kz/cdata/jaz_/43.jpg');
+
+    testObject.x = 100;
+    testObject.y = 100;
+
+    testObject.rotation = 18;
+
+    stage.addChild(testObject);
+
+    stage.onEnterFrame = function(){
+        testObject.rotation++;
+    }
+</script>
+</html>

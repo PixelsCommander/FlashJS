@@ -30,9 +30,13 @@
                     }
                 }
 
-                var player = new SpriteAnimation(assets.get('player'));
-                player.setAnimation('tornado', true);
-                stage.addChild(player);
+                for (var k = 0; k < 100; k++){
+                    var player = new SpriteAnimation(assets.get('player'));
+                    player.setAnimation('tornado', true);
+                    stage.addChild(player);
+                }
+
+                
             }
 
 

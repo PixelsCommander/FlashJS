@@ -64,7 +64,7 @@
     p.getFileNameByFrameNumber = function (frameNumber) {
         var frameNumberString = frameNumber + '';
         var fileName = '';
-        var neededLength = this.options.fileNameNumbers || 4;
+        var neededLength = this.options.fileNameNumbers || 5;
         var zerosToAdd = neededLength - frameNumberString.length;
 
         for (var i = 0; i < zerosToAdd; i++) {
