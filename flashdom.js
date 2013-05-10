@@ -38,6 +38,17 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function cloneObject(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj)
+        temp[key] = cloneObject(obj[key]);
+    return temp;
+}
+
 function defineGetterSetter(variableParent, variableName, getterFunction, setterFunction){
     if (Object.defineProperty)
     {
@@ -1184,7 +1195,9 @@ if (flash.cssTransformFunction === undefined) {
 */
 
 (function(w) {
-	var Stage = function(selector, baseWidth, baseHeight) {
+	var Stage = function(selector, baseWidth, baseHeight, options) {
+        this.options = options || {};
+
 		this.enabled = true;
 
 		this.canvas = typeof selector == 'string' ? document.querySelector(selector) : selector;
@@ -1193,23 +1206,26 @@ if (flash.cssTransformFunction === undefined) {
 		this.baseWidth = baseWidth || 480;
 		this.baseHeight = baseHeight || 320;
 
-		this.resize();
-		
-		var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
-		var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
-		
-		var windowWidth = window.innerWidth;
-		var widnowHeight = window.innerHeight;
+        //Options === undefined condition is here for backward compatibility
+        if (this.options.multiResolution === true || this.options.multiResolution === undefined || this.options === undefined){
+            this.resize();
 
-		this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
-		this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
-		this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
-		this.pixelScale = Math.min(4, this.pixelScale);
+            var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
+            var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
 
-		this.width = this.canvas.width = this.baseWidth * this.pixelScale;
-		this.height = this.canvas.height = this.baseHeight * this.pixelScale;
+            var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
+            var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
 
-		this.canvas.pixelScale = this.pixelScale;
+            this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
+
+            this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
+            this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
+            this.pixelScale = Math.min(4, this.pixelScale);
+
+            this.canvas.pixelScale = this.pixelScale;
+        } else {
+            this.canvas.pixelScale = this.pixelScale = 1;
+        }
 
 		this.lastFrameTime = Date.now();
 
@@ -1502,7 +1518,7 @@ if (flash.cssTransformFunction === undefined) {
  */
 
 (function(w){
-    if (w.DeviceMotionEvent != undefined) {
+    if (w.DeviceMotionEvent !== undefined && w.flash.iOS === true) {
         w.flash.accelerometer = w.flash.accelerometer || {};
         w.flash.accelerometer.noiseBarrier = 0.2;
         w.addEventListener('devicemotion', function(e) {
@@ -1539,7 +1555,7 @@ if (flash.cssTransformFunction === undefined) {
     }
 })(window);
 /*
-* Sound is a part of FlashJS engine
+* APISound is a part of FlashJS engine
 *
 * http://flashjs.com
 *
@@ -1668,7 +1684,7 @@ if (flash.cssTransformFunction === undefined) {
 	w.flash.cloneToNamespaces(APISound, 'APISound');
 })(window);
 /*
-* Sound is a part of FlashJS engine
+* PhoneGapSound is a part of FlashJS engine
 *
 * http://flashjs.com
 *
@@ -1774,6 +1790,16 @@ if (flash.cssTransformFunction === undefined) {
         this.changeCodecTo(this.codec);
 
         if (this.onload !== undefined) {
+            var tempLoadHandler = this.onload;
+
+            this.onload = function(){
+                tempLoadHandler();
+                this._audio.removeEventListener('canplaythrough', this.onload);
+                this._audio.removeEventListener('load', this.onload, false);
+            }
+
+            this.onload = this.onload.bind(this);
+
             this._audio.addEventListener('canplaythrough', this.onload, false);
             this._audio.addEventListener('load', this.onload, false);
         }
@@ -1886,13 +1912,23 @@ if (flash.cssTransformFunction === undefined) {
 
 (function(w){
 	var ImageLoader = function(URL, options, callback, errorCallback, context){
+        this.context = context;
+        this.options = options;
+        this.callback = callback;
 		var image = new Image();
 
-		var url = w.URL || w.webkitURL; 
+		var url = w.URL || w.webkitURL;
 
-		image.onload = function(arg){
+        //modifiedVersions will be added to AssetsList as separate assets with appliedModifiers object
+        if (this.context !== undefined){
+            this.modifiedVersions = [];
+            this.addModifiedVersions();
+            this.modifyCallBack();
+        }
+
+		image.onload = (function(arg){
 			if (callback !== undefined) callback(arg);
-		}
+		}).bind(this);
 
 		image.onerror = function(arg){
 			if (errorCallback !== undefined) errorCallback(arg);
@@ -1914,7 +1950,68 @@ if (flash.cssTransformFunction === undefined) {
 		}
 	}
 
+    ImageLoader.modifiers = {
+        verticalFlip: function(data){
+            return w.flash.getFlippedImage(data, false, true);
+        },
+        horizontalFlip: function(data){
+            return w.flash.getFlippedImage(data, true, false);
+        },
+        bothFlip: function(data){
+            return w.flash.getFlippedImage(data, true, true);
+        }
+    };
+
 	p = ImageLoader.prototype = new DisplayObject();
+
+    p.cloneOptionsObject = function(){
+        var objectToAdd = cloneObject(this.options);
+        return this.cleanOptionsObjectFromModifiers(objectToAdd);
+    }
+
+    p.cleanOptionsObjectFromModifiers = function(obj){
+        for (var i in this.options){
+            for (var k in ImageLoader.modifiers){
+                if (i === k){
+                    obj[i] = undefined;
+                }
+            }
+        }
+        return obj;
+    }
+
+    p.addModifiedVersions = function(){
+        for (var i in this.options){
+            for (var k in ImageLoader.modifiers){
+                if (i === k && this.options[i] !== undefined){
+                    var modifiedVersion = this.cloneOptionsObject();
+                    modifiedVersion.id = modifiedVersion.id + '_' + i;
+                    modifiedVersion.appliedModifiers = [];
+                    modifiedVersion.appliedModifiers.push(i);
+                    modifiedVersion.callback = function(data){
+                        for (var i = 0; i < this.appliedModifiers.length; i++){
+                            this.data = ImageLoader.modifiers[this.appliedModifiers[i]].apply(this, [this.data]);
+                        };
+                    }
+                    this.modifiedVersions.push(modifiedVersion);
+                }
+            }
+        }
+
+        this.context.add(this.modifiedVersions);
+    }
+
+    p.modifyCallBack = function(){
+        if (this.options.appliedModifiers !== undefined){
+            this._callback = this.callback;
+            this.callback = function(data){
+                for (var i = 0; i < this.options.appliedModifiers.length; i++){
+                    data = ImageLoader.modifiers[this.options.appliedModifiers[i]].apply(this, [data.target]);
+                };
+                this._callback();
+            }
+        }
+    }
 
 	w.flash.cloneToNamespaces(ImageLoader, 'ImageLoader');
 })(window);
@@ -1984,7 +2081,7 @@ if (flash.cssTransformFunction === undefined) {
     p.getFileNameByFrameNumber = function (frameNumber) {
         var frameNumberString = frameNumber + '';
         var fileName = '';
-        var neededLength = this.options.fileNameNumbers || 4;
+        var neededLength = this.options.fileNameNumbers || 5;
         var zerosToAdd = neededLength - frameNumberString.length;
 
         for (var i = 0; i < zerosToAdd; i++) {
@@ -2134,17 +2231,19 @@ if (flash.cssTransformFunction === undefined) {
 	}
 
 	p.add = function(asset, callback){
-		if (asset.constructor == Array){
-			for (var i = 0; i < asset.length; i++){
-				this.add(asset[i]);
-			}
-		} else {
-			this.toProceed++;
-			this.newItemsCount++;
-			this.items[asset.id] = asset;	
-			this.items[asset.id].url = this.fixURL(this.items[asset.id].url);
-			this.items[asset.id].callback = this.items[asset.id].callback;
-		}
+        if (asset !== undefined){
+            if (asset.constructor == Array){
+                for (var i = 0; i < asset.length; i++){
+                    this.add(asset[i]);
+                }
+            } else {
+                this.toProceed++;
+                this.newItemsCount++;
+                this.items[asset.id] = asset;
+                this.items[asset.id].url = this.fixURL(this.items[asset.id].url);
+                this.items[asset.id].callback = this.items[asset.id].callback;
+            }
+        }
 	}
 
 	p.fixURL = function(url){

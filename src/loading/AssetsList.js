@@ -45,17 +45,19 @@
 	}
 
 	p.add = function(asset, callback){
-		if (asset.constructor == Array){
-			for (var i = 0; i < asset.length; i++){
-				this.add(asset[i]);
-			}
-		} else {
-			this.toProceed++;
-			this.newItemsCount++;
-			this.items[asset.id] = asset;	
-			this.items[asset.id].url = this.fixURL(this.items[asset.id].url);
-			this.items[asset.id].callback = this.items[asset.id].callback;
-		}
+        if (asset !== undefined){
+            if (asset.constructor == Array){
+                for (var i = 0; i < asset.length; i++){
+                    this.add(asset[i]);
+                }
+            } else {
+                this.toProceed++;
+                this.newItemsCount++;
+                this.items[asset.id] = asset;
+                this.items[asset.id].url = this.fixURL(this.items[asset.id].url);
+                this.items[asset.id].callback = this.items[asset.id].callback;
+            }
+        }
 	}
 
 	p.fixURL = function(url){

@@ -24,6 +24,7 @@
         this.baseWidth = baseWidth || 480;
         this.baseHeight = baseHeight || 320;
 
+        //this.options.multiResolution === undefined condition is here for backward compatibility
         if (this.options.multiResolution === true || this.options.multiResolution === undefined){
             this.resize();
 
@@ -140,7 +141,8 @@
 	    var optimalRatio = Math.min(scaleToFitX, scaleToFitY);
 	    this.scale = this.canvas.scale = optimalRatio;
 
-	    if (this.scaleToScreen === true){
+        //this.options.scaleToScreen === undefined condition is here for backward compatibility
+	    if (this.options.scaleToScreen === true || this.options.scaleToScreen === undefined){
 	    	if (currentScreenRatio >= 1.77 && currentScreenRatio <= 1.79) {
 		        this.canvas.style.width = containerWidth + "px";
 		        this.canvas.style.height = containerHeight + "px";

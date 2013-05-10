@@ -38,6 +38,17 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function cloneObject(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj)
+        temp[key] = cloneObject(obj[key]);
+    return temp;
+}
+
 function defineGetterSetter(variableParent, variableName, getterFunction, setterFunction){
     if (Object.defineProperty)
     {
@@ -754,7 +765,13 @@ ns.Matrix2D = Matrix2D;
 		this.init();
 
 		if (image !== undefined) {
-            this.setImage(image, width, height);
+            if ((typeof image) === 'string'){
+                image = new ImageLoader(image, undefined, (function(){
+                    this.setImage(image, width, height);
+                }).bind(this));
+            } else {
+                this.setImage(image);
+            }
 		}
 
         if (stage !== undefined){
@@ -820,7 +837,7 @@ ns.Matrix2D = Matrix2D;
     p.updateMaxZIndex = function(zindex, object){
         if (this._stage !== undefined) {
             if (zindex === undefined) zindex = this.zindexCache;
-            this._stage.maxzindex = Math.max(this._stage.maxzindex, zindex);
+            this._stage.maxzindex = Math.max(this._stage.maxzindex, zindex + 1);
         }
     }
 
@@ -880,6 +897,11 @@ ns.Matrix2D = Matrix2D;
 
         var ctx = this.cacheCanvas.getContext('2d');
         ctx.drawImage(image, 0, 0, this._originalWidth, this._originalHeight);
+    }
+
+    p.setRotationCenter = function(){
+        this.regX = this.cacheCanvas.width / 2;
+        this.regY = this.cacheCanvas.height / 2;
     }
 
     p.refreshHalfDimensions = function(){
@@ -1003,7 +1025,7 @@ ns.Matrix2D = Matrix2D;
 		
 		tempObject.x = object.x;
 		tempObject.y = object.y;
-		tempObject.zindex = object.zindex;
+		tempObject.zIndex = object.zIndex;
 		tempObject.data = object;
 
 		return tempObject;
@@ -1079,7 +1101,7 @@ ns.Matrix2D = Matrix2D;
 	}
 
 	p.removeChildByIndex = function(index){
-        this.childs[i].cleanListeners();
+        this.childs[index].cleanListeners();
 		this.childs.splice(index, 1);
 	}
 
@@ -1094,8 +1116,8 @@ ns.Matrix2D = Matrix2D;
 */
 
 (function(w) {
-	var Stage = function(selector, baseWidth, baseHeight) {
-		this.enabled = true;
+	var Stage = function(selector, baseWidth, baseHeight, options) {
+        this.options = options || {};
 
 		this.canvas = typeof selector == 'string' ? document.querySelector(selector) : selector;
 
@@ -1107,27 +1129,33 @@ ns.Matrix2D = Matrix2D;
 
 		//TODO delete after TextField and onClick/HitTest would be implemented
 		if (this.canvas.leftOffset) this.leftOffset = this.canvas.leftOffset;
-		
-		this.baseWidth = baseWidth || 480;
-		this.baseHeight = baseHeight || 320;
 
-		this.resize();
-		
-		var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
-		var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
-		
-		var windowWidth = window.innerWidth;
-		var widnowHeight = window.innerHeight;
+        this.baseWidth = baseWidth || 480;
+        this.baseHeight = baseHeight || 320;
 
-		this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
-		this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
-		this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
-		this.pixelScale = Math.min(4, this.pixelScale);
+        //this.options.multiResolution === undefined condition is here for backward compatibility
+        if (this.options.multiResolution === true || this.options.multiResolution === undefined){
+            this.resize();
 
-		this.width = this.canvas.width = this.baseWidth * this.pixelScale;
-		this.height = this.canvas.height = this.baseHeight * this.pixelScale;
+            var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
+            var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
 
-		this.canvas.pixelScale = this.pixelScale;
+            var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
+            var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
+
+            this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
+
+            this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
+            this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
+            this.pixelScale = Math.min(4, this.pixelScale);
+
+            this.canvas.pixelScale = this.pixelScale;
+        } else {
+            this.canvas.pixelScale = this.pixelScale = 1;
+        }
+
+        this.width = this.canvas.width = this.baseWidth * this.pixelScale;
+        this.height = this.canvas.height = this.baseHeight * this.pixelScale;
 
 		this.lastFrameTime = Date.now();
 
@@ -1180,6 +1208,7 @@ ns.Matrix2D = Matrix2D;
 		w.flash.initTouch(this);
 		
 		this.childs = [];
+        this.enabled = true;
 	}
 
 	var p = Stage.prototype = new DisplayList();
@@ -1221,7 +1250,8 @@ ns.Matrix2D = Matrix2D;
 	    var optimalRatio = Math.min(scaleToFitX, scaleToFitY);
 	    this.scale = this.canvas.scale = optimalRatio;
 
-	    //if (this.scaleToScreen === true){
+        //this.options.scaleToScreen === undefined condition is here for backward compatibility
+	    if (this.options.scaleToScreen === true || this.options.scaleToScreen === undefined){
 	    	if (currentScreenRatio >= 1.77 && currentScreenRatio <= 1.79) {
 		        this.canvas.style.width = containerWidth + "px";
 		        this.canvas.style.height = containerHeight + "px";
@@ -1230,7 +1260,7 @@ ns.Matrix2D = Matrix2D;
 		        this.canvas.style.width = this.baseWidth * optimalRatio + "px";
 		        this.canvas.style.height = this.baseHeight * optimalRatio + "px";
 		    }	
-	    //}
+	    }
 
 	    var leftOffset = (window.innerWidth - this.baseWidth * optimalRatio) / 2;
 	    this.leftOffset = this.canvas.leftOffset = leftOffset;
@@ -1322,32 +1352,11 @@ ns.Matrix2D = Matrix2D;
         for (var i = 0; i < this.frames.length; i++){
             var currentAnimation = this.getAnimationByFrameNumber(i);
             if (currentAnimation !== undefined && currentAnimation.makeFlip) {
-                this.flippedFrames.push(this.getFlippedFrame(this.frames[i]));
+                this.flippedFrames.push(w.flash.getFlippedImage(this.frames[i], true));
             } else {
                 this.flippedFrames.push(undefined);
             }
         }
-    }
-
-    p.getFlippedFrame = function(imageData){
-
-        var canvas = document.createElement("canvas");
-        canvas.width = this._frameWidth;
-        canvas.height = this._frameHeight;
-        var context = canvas.getContext("2d");
-
-        var newCanvas = document.createElement("canvas");
-        newCanvas.width = this._frameWidth;
-        newCanvas.height = this._frameHeight;
-        var newContext = newCanvas.getContext("2d");
-
-        context.save();
-        context.scale(-1, 1);
-        context.drawImage(imageData, -this._frameWidth, 0);
-        newContext.drawImage(canvas, 0, 0);
-        context.restore();
-
-        return newCanvas;
     }
 
     p.getAnimationByFrameNumber = function(frameNumber){
@@ -1710,7 +1719,7 @@ ns.Matrix2D = Matrix2D;
  */
 
 (function(w){
-    if (w.DeviceMotionEvent != undefined) {
+    if (w.DeviceMotionEvent !== undefined && w.flash.iOS === true) {
         w.flash.accelerometer = w.flash.accelerometer || {};
         w.flash.accelerometer.noiseBarrier = 0.2;
         w.addEventListener('devicemotion', function(e) {
@@ -1747,7 +1756,7 @@ ns.Matrix2D = Matrix2D;
     }
 })(window);
 /*
-* Sound is a part of FlashJS engine
+* APISound is a part of FlashJS engine
 *
 * http://flashjs.com
 *
@@ -1876,7 +1885,7 @@ ns.Matrix2D = Matrix2D;
 	w.flash.cloneToNamespaces(APISound, 'APISound');
 })(window);
 /*
-* Sound is a part of FlashJS engine
+* PhoneGapSound is a part of FlashJS engine
 *
 * http://flashjs.com
 *
@@ -1982,6 +1991,16 @@ ns.Matrix2D = Matrix2D;
         this.changeCodecTo(this.codec);
 
         if (this.onload !== undefined) {
+            var tempLoadHandler = this.onload;
+
+            this.onload = function(){
+                tempLoadHandler();
+                this._audio.removeEventListener('canplaythrough', this.onload);
+                this._audio.removeEventListener('load', this.onload, false);
+            }
+
+            this.onload = this.onload.bind(this);
+
             this._audio.addEventListener('canplaythrough', this.onload, false);
             this._audio.addEventListener('load', this.onload, false);
         }
@@ -2094,13 +2113,23 @@ ns.Matrix2D = Matrix2D;
 
 (function(w){
 	var ImageLoader = function(URL, options, callback, errorCallback, context){
+        this.context = context;
+        this.options = options;
+        this.callback = callback;
 		var image = new Image();
 
-		var url = w.URL || w.webkitURL; 
+		var url = w.URL || w.webkitURL;
 
-		image.onload = function(arg){
+        //modifiedVersions will be added to AssetsList as separate assets with appliedModifiers object
+        if (this.context !== undefined){
+            this.modifiedVersions = [];
+            this.addModifiedVersions();
+            this.modifyCallBack();
+        }
+
+		image.onload = (function(arg){
 			if (callback !== undefined) callback(arg);
-		}
+		}).bind(this);
 
 		image.onerror = function(arg){
 			if (errorCallback !== undefined) errorCallback(arg);
@@ -2122,7 +2151,68 @@ ns.Matrix2D = Matrix2D;
 		}
 	}
 
+    ImageLoader.modifiers = {
+        verticalFlip: function(data){
+            return w.flash.getFlippedImage(data, false, true);
+        },
+        horizontalFlip: function(data){
+            return w.flash.getFlippedImage(data, true, false);
+        },
+        bothFlip: function(data){
+            return w.flash.getFlippedImage(data, true, true);
+        }
+    };
+
 	p = ImageLoader.prototype = new DisplayObject();
+
+    p.cloneOptionsObject = function(){
+        var objectToAdd = cloneObject(this.options);
+        return this.cleanOptionsObjectFromModifiers(objectToAdd);
+    }
+
+    p.cleanOptionsObjectFromModifiers = function(obj){
+        for (var i in this.options){
+            for (var k in ImageLoader.modifiers){
+                if (i === k){
+                    obj[i] = undefined;
+                }
+            }
+        }
+        return obj;
+    }
+
+    p.addModifiedVersions = function(){
+        for (var i in this.options){
+            for (var k in ImageLoader.modifiers){
+                if (i === k && this.options[i] !== undefined){
+                    var modifiedVersion = this.cloneOptionsObject();
+                    modifiedVersion.id = modifiedVersion.id + '_' + i;
+                    modifiedVersion.appliedModifiers = [];
+                    modifiedVersion.appliedModifiers.push(i);
+                    modifiedVersion.callback = function(data){
+                        for (var i = 0; i < this.appliedModifiers.length; i++){
+                            this.data = ImageLoader.modifiers[this.appliedModifiers[i]].apply(this, [this.data]);
+                        };
+                    }
+                    this.modifiedVersions.push(modifiedVersion);
+                }
+            }
+        }
+
+        this.context.add(this.modifiedVersions);
+    }
+
+    p.modifyCallBack = function(){
+        if (this.options.appliedModifiers !== undefined){
+            this._callback = this.callback;
+            this.callback = function(data){
+                for (var i = 0; i < this.options.appliedModifiers.length; i++){
+                    data = ImageLoader.modifiers[this.options.appliedModifiers[i]].apply(this, [data.target]);
+                };
+                this._callback();
+            }
+        }
+    }
 
 	w.flash.cloneToNamespaces(ImageLoader, 'ImageLoader');
 })(window);
@@ -2192,7 +2282,7 @@ ns.Matrix2D = Matrix2D;
     p.getFileNameByFrameNumber = function (frameNumber) {
         var frameNumberString = frameNumber + '';
         var fileName = '';
-        var neededLength = this.options.fileNameNumbers || 4;
+        var neededLength = this.options.fileNameNumbers || 5;
         var zerosToAdd = neededLength - frameNumberString.length;
 
         for (var i = 0; i < zerosToAdd; i++) {
@@ -2342,17 +2432,19 @@ ns.Matrix2D = Matrix2D;
 	}
 
 	p.add = function(asset, callback){
-		if (asset.constructor == Array){
-			for (var i = 0; i < asset.length; i++){
-				this.add(asset[i]);
-			}
-		} else {
-			this.toProceed++;
-			this.newItemsCount++;
-			this.items[asset.id] = asset;	
-			this.items[asset.id].url = this.fixURL(this.items[asset.id].url);
-			this.items[asset.id].callback = this.items[asset.id].callback;
-		}
+        if (asset !== undefined){
+            if (asset.constructor == Array){
+                for (var i = 0; i < asset.length; i++){
+                    this.add(asset[i]);
+                }
+            } else {
+                this.toProceed++;
+                this.newItemsCount++;
+                this.items[asset.id] = asset;
+                this.items[asset.id].url = this.fixURL(this.items[asset.id].url);
+                this.items[asset.id].callback = this.items[asset.id].callback;
+            }
+        }
 	}
 
 	p.fixURL = function(url){
@@ -2450,6 +2542,34 @@ ns.Matrix2D = Matrix2D;
 	p.onError = undefined;
 
 	w.flash.cloneToNamespaces(AssetsList, 'AssetsList');
+})(window);
+(function(w){
+    var getFlippedImage = function (imageData, flipHorizontally, flipVertically){
+        var horizontalScale = flipHorizontally ? -1 : 1;
+        var verticalScale = flipVertically ? -1 : 1;
+        var deltaX = flipHorizontally ? -imageData.width : 0;
+        var deltaY = flipVertically ? -imageData.height : 0;
+
+        var canvas = document.createElement("canvas");
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        var context = canvas.getContext("2d");
+
+        var newCanvas = document.createElement("canvas");
+        newCanvas.width = imageData.width;
+        newCanvas.height = imageData.height;
+        var newContext = newCanvas.getContext("2d");
+
+        context.save();
+        context.scale(horizontalScale, verticalScale);
+        context.drawImage(imageData, deltaX, deltaY);
+        newContext.drawImage(canvas, 0, 0);
+        context.restore();
+
+        return newCanvas;
+    }
+
+    w.flash.cloneToNamespaces(getFlippedImage, 'getFlippedImage');
 })(window);
 /*
  * ActionScriptTagExecutor is a part of FlashJS engine

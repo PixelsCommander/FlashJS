@@ -38,6 +38,17 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function cloneObject(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj)
+        temp[key] = cloneObject(obj[key]);
+    return temp;
+}
+
 function defineGetterSetter(variableParent, variableName, getterFunction, setterFunction){
     if (Object.defineProperty)
     {

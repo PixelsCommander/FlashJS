@@ -11,7 +11,7 @@
     concat: {
       canvas: {
         src: [
-         './utils/Core-utils.js',
+         './utils/CoreUtils.js',
          './geom/Matrix2D.js',
          './display-canvas/DisplayObject.js',
          './display-canvas/DisplayList.js',
@@ -30,13 +30,14 @@
          './loading/SoundLoader.js',
          './loading/Loader.js',
          './loading/AssetsList.js',
+         './utils/ImageUtils.js',
          './utils/ActionScriptTagExecutor.js'
          ],
         dest: '../flash.js'
       },
       dom: {
         src: [
-         './utils/Core-utils.js',
+         './utils/CoreUtils.js',
          './geom/Matrix2D.js',
          './display-dom/DisplayObject.js',
          './display-dom/DisplayList.js',

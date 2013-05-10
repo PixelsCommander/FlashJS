@@ -66,32 +66,11 @@
         for (var i = 0; i < this.frames.length; i++){
             var currentAnimation = this.getAnimationByFrameNumber(i);
             if (currentAnimation !== undefined && currentAnimation.makeFlip) {
-                this.flippedFrames.push(this.getFlippedFrame(this.frames[i]));
+                this.flippedFrames.push(w.flash.getFlippedImage(this.frames[i], true));
             } else {
                 this.flippedFrames.push(undefined);
             }
         }
-    }
-
-    p.getFlippedFrame = function(imageData){
-
-        var canvas = document.createElement("canvas");
-        canvas.width = this._frameWidth;
-        canvas.height = this._frameHeight;
-        var context = canvas.getContext("2d");
-
-        var newCanvas = document.createElement("canvas");
-        newCanvas.width = this._frameWidth;
-        newCanvas.height = this._frameHeight;
-        var newContext = newCanvas.getContext("2d");
-
-        context.save();
-        context.scale(-1, 1);
-        context.drawImage(imageData, -this._frameWidth, 0);
-        newContext.drawImage(canvas, 0, 0);
-        context.restore();
-
-        return newCanvas;
     }
 
     p.getAnimationByFrameNumber = function(frameNumber){

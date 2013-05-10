@@ -141,11 +141,13 @@
         this.cacheCanvas.width = this._originalWidth;
         this.cacheCanvas.height = this._originalHeight;
 
-        this.regX = this.cacheCanvas.width / 2;
-        this.regY = this.cacheCanvas.height / 2;
-
         var ctx = this.cacheCanvas.getContext('2d');
         ctx.drawImage(image, 0, 0, this._originalWidth, this._originalHeight);
+    }
+
+    p.setRotationCenter = function(){
+        this.regX = this.cacheCanvas.width / 2;
+        this.regY = this.cacheCanvas.height / 2;
     }
 
     p.refreshHalfDimensions = function(){

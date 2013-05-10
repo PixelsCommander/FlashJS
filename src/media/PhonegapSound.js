@@ -1,5 +1,5 @@
 /*
-* Sound is a part of FlashJS engine
+* PhoneGapSound is a part of FlashJS engine
 *
 * http://flashjs.com
 *

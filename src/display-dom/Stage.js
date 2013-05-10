@@ -7,7 +7,9 @@
 */
 
 (function(w) {
-	var Stage = function(selector, baseWidth, baseHeight) {
+	var Stage = function(selector, baseWidth, baseHeight, options) {
+        this.options = options || {};
+
 		this.enabled = true;
 
 		this.canvas = typeof selector == 'string' ? document.querySelector(selector) : selector;
@@ -16,23 +18,26 @@
 		this.baseWidth = baseWidth || 480;
 		this.baseHeight = baseHeight || 320;
 
-		this.resize();
-		
-		var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
-		var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
-		
-		var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
-        var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
+        //Options === undefined condition is here for backward compatibility
+        if (this.options.multiResolution === true || this.options.multiResolution === undefined || this.options === undefined){
+            this.resize();
 
-		this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
-		this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
-		this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
-		this.pixelScale = Math.min(4, this.pixelScale);
+            var canvasWidth = this.canvas.offsetWidth || parseInt(this.canvas.style.width);
+            var canvasHeight = this.canvas.offsetHeight || parseInt(this.canvas.style.height);
 
-		this.width = this.canvas.width = this.baseWidth * this.pixelScale;
-		this.height = this.canvas.height = this.baseHeight * this.pixelScale;
+            var windowWidth = window.parent ? window.parent.innerWidth : window.innerWidth;
+            var widnowHeight = window.parent ? window.parent.innerHeight :window.innerHeight;
 
-		this.canvas.pixelScale = this.pixelScale;
+            this.scale = Math.min(canvasWidth / this.baseWidth, canvasHeight / this.baseHeight);
+
+            this.pixelScale = Math.min(windowWidth / this.baseWidth, widnowHeight / this.baseHeight);
+            this.pixelScale = Math.max(1, Math.ceil(this.pixelScale));
+            this.pixelScale = Math.min(4, this.pixelScale);
+
+            this.canvas.pixelScale = this.pixelScale;
+        } else {
+            this.canvas.pixelScale = this.pixelScale = 1;
+        }
 
 		this.lastFrameTime = Date.now();
 

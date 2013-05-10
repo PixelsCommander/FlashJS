@@ -46,6 +46,16 @@
         this.changeCodecTo(this.codec);
 
         if (this.onload !== undefined) {
+            var tempLoadHandler = this.onload;
+
+            this.onload = function(){
+                tempLoadHandler();
+                this._audio.removeEventListener('canplaythrough', this.onload);
+                this._audio.removeEventListener('load', this.onload, false);
+            }
+
+            this.onload = this.onload.bind(this);
+
             this._audio.addEventListener('canplaythrough', this.onload, false);
             this._audio.addEventListener('load', this.onload, false);
         }
