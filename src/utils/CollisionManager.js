@@ -14,6 +14,10 @@
 	var p = CollisionManager.prototype;
 
     p.checkCollision = function(objectA, objectB, callback, scaleX, scaleY){
+
+        scaleX = scaleX || 1;
+        scaley = scaley || 1;
+
         var matrixA = objectA.getConcatenatedMatrix();
         var matrixB = objectB.getConcatenatedMatrix();
 

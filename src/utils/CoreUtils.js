@@ -31,7 +31,11 @@ function replaceAll(txt, replace, with_this) {
 }
 
 function getFileExtension(filename){
-	return (/[.]/.exec(filename))[0] ? /[^.]+$/.exec(filename)[0] : '';
+    var result = (/[.]/.exec(filename))[0] ? /[^.]+$/.exec(filename)[0] : '';
+    if (result === filename.replace('.', '')) {
+        result = '';
+    }
+    return result;
 }
 
 function getRandomInt(min, max) {

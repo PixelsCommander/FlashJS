@@ -74,6 +74,9 @@
     }
 
 	p.play = function(){
+        if (flash.soundMuted === true) {
+            return;
+        }
         this._audio.loop = this.loop;
         if (this._audio.paused){
             if (this._audio.loop && this.codec === 'ogg'){

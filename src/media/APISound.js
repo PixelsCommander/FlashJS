@@ -55,6 +55,10 @@
     }
 
     p.play = function(){
+        if (flash.soundMuted === true) {
+            return;
+        }
+
         this.audio = this.context.createBufferSource();
         this.gain = this.context.createGainNode();
         this.audio.connect(this.gain);

@@ -114,9 +114,9 @@ public class Main {
 		
 		AudioAttributes audio = new AudioAttributes();
 		audio.setCodec("libmp3lame");
-		audio.setBitRate(new Integer(96000));
+		audio.setBitRate(new Integer(64000));
 		audio.setChannels(new Integer(2));
-		audio.setSamplingRate(new Integer(44100));
+		audio.setSamplingRate(new Integer(22050));
 		
 		EncodingAttributes attrs = new EncodingAttributes();
 		attrs.setFormat("mp3");
@@ -132,9 +132,9 @@ public class Main {
 		
 		AudioAttributes audio = new AudioAttributes();
 		audio.setCodec("libvorbis");
-		audio.setBitRate(new Integer(128000));
+		audio.setBitRate(new Integer(64000));
 		audio.setChannels(new Integer(2));
-		audio.setSamplingRate(new Integer(44100));
+		audio.setSamplingRate(new Integer(22050));
 		
 		EncodingAttributes attrs = new EncodingAttributes();
 		attrs.setFormat("ogg");

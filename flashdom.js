@@ -1611,6 +1611,10 @@ if (flash.cssTransformFunction === undefined) {
     }
 
     p.play = function(){
+        if (flash.soundMuted === true) {
+            return;
+        }
+
         this.audio = this.context.createBufferSource();
         this.gain = this.context.createGainNode();
         this.audio.connect(this.gain);
@@ -1723,6 +1727,9 @@ if (flash.cssTransformFunction === undefined) {
     }
 
     p.play = function(){
+        if (flash.soundMuted === true) {
+            return;
+        }
         this.audio.play();
     }
 
@@ -1818,6 +1825,9 @@ if (flash.cssTransformFunction === undefined) {
     }
 
 	p.play = function(){
+        if (flash.soundMuted === true) {
+            return;
+        }
         this._audio.loop = this.loop;
         if (this._audio.paused){
             if (this._audio.loop && this.codec === 'ogg'){
@@ -1927,11 +1937,15 @@ if (flash.cssTransformFunction === undefined) {
         }
 
 		image.onload = (function(arg){
-			if (callback !== undefined) callback(arg);
+			if (callback !== undefined) {
+                callback(arg);
+            }
 		}).bind(this);
 
 		image.onerror = function(arg){
-			if (errorCallback !== undefined) errorCallback(arg);
+			if (errorCallback !== undefined) {
+                errorCallback(arg);
+            }
 		}
 
         if (false){
@@ -1944,7 +1958,7 @@ if (flash.cssTransformFunction === undefined) {
 	}
 
 	ImageLoader.checkLoaderType = function(URL, options){
-		var extension = (getFileExtension(URL));
+		var extension = (w.getFileExtension(URL));
 		if ((extension === 'jpg') || (extension === 'png') || (extension === 'gif')){
 			return true;
 		}

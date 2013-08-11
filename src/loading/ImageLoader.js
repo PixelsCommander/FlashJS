@@ -23,11 +23,15 @@
         }
 
 		image.onload = (function(arg){
-			if (callback !== undefined) callback(arg);
+			if (callback !== undefined) {
+                callback(arg);
+            }
 		}).bind(this);
 
 		image.onerror = function(arg){
-			if (errorCallback !== undefined) errorCallback(arg);
+			if (errorCallback !== undefined) {
+                errorCallback(arg);
+            }
 		}
 
         if (false){
@@ -40,7 +44,7 @@
 	}
 
 	ImageLoader.checkLoaderType = function(URL, options){
-		var extension = (getFileExtension(URL));
+		var extension = (w.getFileExtension(URL));
 		if ((extension === 'jpg') || (extension === 'png') || (extension === 'gif')){
 			return true;
 		}

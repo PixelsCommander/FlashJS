@@ -3,7 +3,7 @@
  *
  * http://flashjs.com
  *
- * Copyright (c) 2011 - 2012 pixelsresearch.com,
+ * Copyright (c) 2011 - 2013 pixelsresearch.com,
  */
 
 (function (w) {
@@ -12,9 +12,10 @@
         this.url = URL || w.webkitURL;
         this.options = options;
         this.callback = callback;
-        this.spriteSheet = new SpriteSheet(undefined, options.width * options.scale, options.height * options.scale, options.framesTotal, options.animations);
         this.context = context;
         this.frames = [];
+        this.spriteSheet = {};
+        this.createSpritesheet();
 
         if (URL[URL.length - 1] === "/") {
             this.addAssetsToLoader();
@@ -79,6 +80,18 @@
         this.framesToLoad--;
         this.frames[item.frameNumber] = item.data;
 
+        if (this.spriteSheet._frameWidth === undefined || this.spriteSheet._frameHeight === undefined) {
+            if (this.options.width === undefined) {
+                this.options.width = item.data.width;
+                this.spriteSheet._frameWidth = this.options.width;
+            }
+
+            if (this.options.height === undefined) {
+                this.options.height = item.data.height;
+                this.spriteSheet._frameHeight = this.options.height;
+            }
+        }
+
         if (this.framesToLoad === 0) {
             this.spriteSheet.data = this.frames;
             this.spriteSheet.fillFramesFromImagesArray();
@@ -87,9 +100,15 @@
         }
     }
 
-    AnimationLoader.checkLoaderType = function (URL, options) {
-        return ((getFileExtension(URL) === '') || (options.animations !== undefined));
+    p.createSpritesheet = function() {
+        if (this.options.framesTotal === undefined) {
+            throw new Error('Asset`s ' + this.options.id + ' framesTotal property is undefined');
+        }
+        this.spriteSheet = new SpriteSheet(undefined, (this.options.width * this.options.scale) || undefined, (this.options.height * this.options.scale) || undefined, this.options.framesTotal, this.options.animations);
     }
 
-    w.flash.cloneToNamespaces(AnimationLoader, 'AnimationLoader');
+    AnimationLoader.checkLoaderType = function (URL, options) {
+        var extension = getFileExtension(URL);
+        return ((extension === '') || (options.animations !== undefined));
+    }
 })(window);

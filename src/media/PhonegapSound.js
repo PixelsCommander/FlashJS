@@ -38,6 +38,9 @@
     }
 
     p.play = function(){
+        if (flash.soundMuted === true) {
+            return;
+        }
         this.audio.play();
     }
 
