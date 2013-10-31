@@ -1,67 +1,76 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<script src="../../src/utils/CoreUtils.js"></script>
-		<script src="../../src/geom/Matrix2D.js"></script>
-		<script src="../../src/display-canvas/DisplayObject.js"></script>
-		<script src="../../src/display-canvas/DisplayList.js"></script>
-		<script src="../../src/display-canvas/Stage.js"></script>
-		<script src="../../src/display-canvas/SpriteSheet.js"></script>
-		<script src="../../src/display-canvas/SpriteAnimation.js"></script>
-		<script src="../../src/events/Event.js"></script>
-		<script src="../../src/events/TouchEvent.js"></script>
-		<script src="../../src/loading/AnimationLoader.js"></script>
-		<script src="../../src/loading/ImageLoader.js"></script>
-		<script src="../../src/media/Sound.js"></script>
-		<script src="../../src/loading/SoundLoader.js"></script>
-		<script src="../../src/loading/Loader.js"></script>
-		<script src="../../src/loading/AssetsList.js"></script>
-        <script src="../../src/utils/ImageUtils.js"></script>
-	</head>
-	<body>
-		<canvas height="auto" width="100%" id="gameCanvas" style="width:100%; height:100%;">
-		</canvas>
-        <p>
-            <h2>Multi resolution</h2>
-            Resize browser to smallest size and reload page, then resize window back to whole screen.
-            You`ll see that gameCanvas and assets are low resolution. Reload page now. FlashJS will load correct assets for your window size.
-            This happens because FlashJS detects device or window size and loads corresponding assets. So for iPhone you`ll have lower resolution choosen and higher one for desktop. Virtual coordinates are also interesting feature of FlashJS. This means that after resolution changed - coordinates inside of stage kept same. You dont need to add something like myObject.x = newX * scale, everything is already done inside of engine in the way you`ll have united coordinate measure for all resolutions. You can get current assets resolution from Stage.pixelScale property.
-        </p>
-        <p>
-            <h2>Assets flipping</h2>
-            May be you noticed that some fishes are flipped horizontally, but only fish.png is loaded.
-            Look to ./assets/main-assets.json . Fish asset has properties: <b>horizontalFlip</b>, <b>verticalFlip</b>, <b>bothFlip</b> equal to <b>true</b>.
-            If you`ll add such properties to your asset`s description - it will be converted to <b>assetId_horizontalFlip</b>, <b>assetId_verticalFlip</b> and <b>assetId_bothFlip</b>.
-            So you do not need any special resources to be loaded to have flipped images.
-        It`s great opportunity to minimize traffic.
-        </p>
-	</body>
-	<script>
-		var loadCallback = function(){
-			for(var k = 0; k < 4; k++){
-				for (var i = 0; i < 4; i++){
-					var assetName = 'fish';
-                    if ((i + k) % 2 === 0){
-                        assetName = 'fish_horizontalFlip';
-                    }
-                    var fish = new DisplayObject(assets.get(assetName));
-					stage.addChild(fish);
-                    fish.x = fish.width * i;
-                    fish.y = fish.height * k;
-				}
-			}
+<head>
+    <script src="../../src/utils/CoreUtils.js"></script>
+    <script src="../../src/geom/Matrix2D.js"></script>
+    <script src="../../src/display-canvas/DisplayObject.js"></script>
+    <script src="../../src/display-canvas/DisplayList.js"></script>
+    <script src="../../src/display-canvas/Stage.js"></script>
+    <script src="../../src/display-canvas/SpriteSheet.js"></script>
+    <script src="../../src/display-canvas/SpriteAnimation.js"></script>
+    <script src="../../src/events/Event.js"></script>
+    <script src="../../src/events/TouchEvent.js"></script>
+    <script src="../../src/loading/AnimationLoader.js"></script>
+    <script src="../../src/loading/ImageLoader.js"></script>
+    <script src="../../src/media/Sound.js"></script>
+    <script src="../../src/loading/SoundLoader.js"></script>
+    <script src="../../src/loading/Loader.js"></script>
+    <script src="../../src/loading/AssetsList.js"></script>
+    <script src="../../src/utils/ImageUtils.js"></script>
+</head>
+<body>
+<canvas height="auto" width="100%" id="gameCanvas" style="width:100%; height:100%;">
+</canvas>
+<p>
 
-			var player = new SpriteAnimation(assets.get('player'));
-			player.setAnimation('tornado', true);
-			stage.addChild(player);
-		}
+<h2>Multi resolution</h2>
+Resize browser to smallest size and reload page, then resize window back to whole screen.
+You`ll see that gameCanvas and assets are low resolution. Reload page now. FlashJS will load correct assets for your
+window size.
+This happens because FlashJS detects device or window size and loads corresponding assets. So for iPhone you`ll have
+lower resolution choosen and higher one for desktop. Virtual coordinates are also interesting feature of FlashJS. This
+means that after resolution changed - coordinates inside of stage kept same. You dont need to add something like
+myObject.x = newX * scale, everything is already done inside of engine in the way you`ll have united coordinate measure
+for all resolutions. You can get current assets resolution from Stage.pixelScale property.
+</p>
+<p>
 
-		var stage = new Stage('#gameCanvas');
-		stage.scaleToScreen = true;
-		stage.scaleX = 1;
-		var assets = new AssetsList({scale: stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", loadCallback);
-		assets.onProgress = function(arg){
-			console.log(arg.toProceed);
-		}
-	</script>
+<h2>Assets flipping</h2>
+May be you noticed that some fishes are flipped horizontally, but only fish.png is loaded.
+Look to ./assets/main-assets.json . Fish asset has properties: <b>horizontalFlip</b>, <b>verticalFlip</b>,
+<b>bothFlip</b> equal to <b>true</b>.
+If you`ll add such properties to your asset`s description - it will be converted to <b>assetId_horizontalFlip</b>, <b>assetId_verticalFlip</b>
+and <b>assetId_bothFlip</b>.
+So you do not need any special resources to be loaded to have flipped images.
+It`s great opportunity to minimize traffic.
+</p>
+</body>
+<script>
+    var loadCallback = function () {
+        for (var k = 0; k < 4; k++) {
+            for (var i = 0; i < 4; i++) {
+                var assetName = 'fish';
+                if ((i + k) % 2 === 0) {
+                    assetName = 'fish_horizontalFlip';
+                }
+                var fish = new DisplayObject(assets.get(assetName));
+                stage.addChild(fish);
+                fish.x = fish.width * i;
+                fish.y = fish.height * k;
+            }
+        }
+
+        var player = new SpriteAnimation(assets.get('player'));
+        player.setAnimation('tornado', true);
+        stage.addChild(player);
+    }
+
+    var stage = new Stage('#gameCanvas');
+    stage.scaleToScreen = true;
+    stage.scaleX = 1;
+    var assets = new AssetsList({scale: stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", loadCallback);
+    assets.onProgress = function (arg) {
+        console.log(arg.toProceed);
+    }
+</script>
 </html>

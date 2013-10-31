@@ -6,10 +6,10 @@
  * Copyright (c) 2011 - 2012 pixelsresearch.com,
  */
 
-(function(w){
-    var executeActionScriptTags = function(){
+(function (w) {
+    var executeActionScriptTags = function () {
         var tags = w.document.getElementsByTagName('actionscript');
-        for (var i = 0; i < tags.length; i++){
+        for (var i = 0; i < tags.length; i++) {
             var astag = tags[i];
             var scriptText = replaceAll(astag.innerHTML, "&lt;", '<');
             scriptText = replaceAll(scriptText, "&gt;", '>');

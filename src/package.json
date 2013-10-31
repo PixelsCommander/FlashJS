@@ -1,25 +1,25 @@
 {
-  "name": "FlashJS",
-  "version": "0.5.1",
-  "description": "Game and graphics engine with API similar to Flash one.",
-  "main": "grunt.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PixelsCommander/FlashJS/"
-  },
-  "keywords": [
-    "flash",
-    "api",
-    "html5",
-    "canvas",
-    "dom"
-  ],
-  "author": "Denis Radin",
-  "license": "Apache 2.0",
-  "devDependencies": {
-    "grunt": "~0.4.0"
-  }
+    "name": "FlashJS",
+    "version": "0.5.1",
+    "description": "Game and graphics engine with API similar to Flash one.",
+    "main": "grunt.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PixelsCommander/FlashJS/"
+    },
+    "keywords": [
+        "flash",
+        "api",
+        "html5",
+        "canvas",
+        "dom"
+    ],
+    "author": "Denis Radin",
+    "license": "Apache 2.0",
+    "devDependencies": {
+        "grunt": "~0.4.0"
+    }
 }

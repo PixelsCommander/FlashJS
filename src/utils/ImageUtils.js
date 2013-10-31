@@ -1,5 +1,5 @@
-(function(w){
-    var getFlippedImage = function (imageData, flipHorizontally, flipVertically){
+(function (w) {
+    var getFlippedImage = function (imageData, flipHorizontally, flipVertically) {
         var horizontalScale = flipHorizontally ? -1 : 1;
         var verticalScale = flipVertically ? -1 : 1;
         var deltaX = flipHorizontally ? -imageData.width : 0;

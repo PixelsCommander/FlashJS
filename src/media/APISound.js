@@ -1,14 +1,14 @@
 /*
-* APISound is a part of FlashJS engine
-*
-* http://flashjs.com
-*
-* Copyright (c) 2011 - 2012 pixelsresearch.com,
-*/
+ * APISound is a part of FlashJS engine
+ *
+ * http://flashjs.com
+ *
+ * Copyright (c) 2011 - 2012 pixelsresearch.com,
+ */
 
-(function(w){
-	var APISound = function(dataOrURL){
-        if (w.flash.iOS === true){
+(function (w) {
+    var APISound = function (dataOrURL) {
+        if (w.flash.iOS === true) {
             w.flash.APISound.sounds.push(this);
         }
 
@@ -16,24 +16,30 @@
         this.loop = false;
         this.context = w.flash.APISound.getAudioContext();
         this.audio = this.context.createBufferSource();
-        this.gain = this.context.createGainNode();
+        this.gain = {};
+
+        if (this.context.createGain !== undefined) {
+            this.gain = this.context.createGain();
+        } else {
+            this.gain = this.context.createGainNode();
+        }
         this.audio.connect(this.gain);
         this.gain.connect(this.context.destination);
         this.onload = this.onload || {};
 
-        if (dataOrURL !== undefined){
-            if (typeof dataOrURL === 'string'){
+        if (dataOrURL !== undefined) {
+            if (typeof dataOrURL === 'string') {
                 this.URL = dataOrURL;
             } else {
                 this.buffer = dataOrURL;
                 this.audio.buffer = this.buffer;
             }
         }
-	}
+    }
 
-	var p = APISound.prototype;
+    var p = APISound.prototype;
 
-    p.load = function(){
+    p.load = function () {
         this.changeCodecTo('mp3');
         var request = new XMLHttpRequest();
         request.open('GET', this.URL, true);
@@ -42,19 +48,19 @@
         request.send();
     }
 
-    p.onsoundloaded = function(e){
+    p.onsoundloaded = function (e) {
         this.buffer = this.context.createBuffer(e.target.response, false);
         this.audio.buffer = this.buffer;
-        if (this.onload !== undefined){
+        if (this.onload !== undefined) {
             this.onload();
         }
     }
 
-    p.onerror = function(){
+    p.onerror = function () {
         throw new Error("Playback error of sound " + this.URL);
     }
 
-    p.play = function(){
+    p.play = function () {
         if (flash.soundMuted === true) {
             return;
         }
@@ -68,25 +74,25 @@
         this.audio.noteOn(0);
     }
 
-    p.stop = function(){
+    p.stop = function () {
         this.audio.noteOff(0);
     }
 
-    p.setVolume = function(volume){
+    p.setVolume = function (volume) {
         this.gain.gain.value = volume;
     }
 
-    p.getVolume = function(){
+    p.getVolume = function () {
         return this.gain.gain.value;
     }
 
-    p.changeCodecTo = function(codecType){
+    p.changeCodecTo = function (codecType) {
         this.URL = replaceAll(this.URL, 'mp3', codecType);
         this.URL = replaceAll(this.URL, 'ogg', codecType);
         this.URL = replaceAll(this.URL, 'wav', codecType);
     }
 
-    APISound.getAudioContext = function(){
+    APISound.getAudioContext = function () {
         if (this.audioContext !== undefined) {
             return this.audioContext;
         } else {
@@ -104,10 +110,10 @@
 
     defineGetterSetter(p, 'volume', p.getVolume, p.setVolume);
 
-    if (w.flash.iOS === true){
-        APISound.initAPI = function(){
+    if (w.flash.iOS === true) {
+        APISound.initAPI = function () {
             var soundToPlay = APISound.getFirstReadySound();
-            if (soundToPlay !== undefined){
+            if (soundToPlay !== undefined) {
                 var tempVolume = soundToPlay.volume;
                 soundToPlay.volume = 0;
                 soundToPlay.play();
@@ -118,9 +124,9 @@
 
         APISound.sounds = [];
 
-        APISound.getFirstReadySound = function(){
-            for(var i = 0; i < APISound.sounds.length; i++){
-                if (APISound.sounds[i].buffer !== undefined){
+        APISound.getFirstReadySound = function () {
+            for (var i = 0; i < APISound.sounds.length; i++) {
+                if (APISound.sounds[i].buffer !== undefined) {
                     return APISound.sounds[i];
                 }
             }
@@ -129,5 +135,5 @@
         w.addEventListener('touchstart', APISound.initAPI);
     }
 
-	w.flash.cloneToNamespaces(APISound, 'APISound');
+    w.flash.cloneToNamespaces(APISound, 'APISound');
 })(window);

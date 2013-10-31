@@ -56,7 +56,7 @@
         for (var i = 0; i < this.options.framesTotal; i++) {
             var numberString = i + (this.options.startFrame + 0);
             numberString = this.getFileNameByFrameNumber(numberString);
-            var objectToAdd = {id:this.options.id + '_' + i, url:this.url + numberString + '.png', callback:this.frameLoaded.bind(this), frameNumber:i};
+            var objectToAdd = {id: this.options.id + '_' + i, url: this.url + numberString + '.png', callback: this.frameLoaded.bind(this), frameNumber: i};
             this.context.add(objectToAdd);
             this.framesToLoad++;
         }
@@ -100,7 +100,7 @@
         }
     }
 
-    p.createSpritesheet = function() {
+    p.createSpritesheet = function () {
         if (this.options.framesTotal === undefined) {
             throw new Error('Asset`s ' + this.options.id + ' framesTotal property is undefined');
         }
@@ -111,4 +111,6 @@
         var extension = getFileExtension(URL);
         return ((extension === '') || (options.animations !== undefined));
     }
+
+    w.flash.cloneToNamespaces(AnimationLoader, 'AnimationLoader');
 })(window);

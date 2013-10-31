@@ -1,13 +1,13 @@
 {
-	"assetsData":[
-		{
-			"url":"../../sounds/mp3/sfx/general/wipe_out.mp3",
-			"id":"wipe"
-		},
-		{
-			"url":"../../sounds/ogg/music/level_1/level_1_hey_dude.ogg",
-			"id":"music",
-			"loop":true
-		}
-	]
+    "assetsData": [
+        {
+            "url": "../../sounds/mp3/sfx/general/wipe_out.mp3",
+            "id": "wipe"
+        },
+        {
+            "url": "../../sounds/ogg/music/level_1/level_1_hey_dude.ogg",
+            "id": "music",
+            "loop": true
+        }
+    ]
 }

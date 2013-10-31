@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<script src="../../src/utils/CoreUtils.js"></script>
-		<script src="../../src/geom/Matrix2D.js"></script>
-		<script src="../../src/display-canvas/DisplayObject.js"></script>
-		<script src="../../src/display-canvas/DisplayList.js"></script>
-		<script src="../../src/display-canvas/Stage.js"></script>
-		<script src="../../src/display-canvas/SpriteSheet.js"></script>
-		<script src="../../src/display-canvas/SpriteAnimation.js"></script>
-		<script src="../../src/events/Event.js"></script>
-		<script src="../../src/events/TouchEvent.js"></script>
-		<script src="../../src/loading/AnimationLoader.js"></script>
-		<script src="../../src/loading/ImageLoader.js"></script>
-		<script src="../../src/media/Sound.js"></script>
-		<script src="../../src/loading/SoundLoader.js"></script>
-		<script src="../../src/loading/Loader.js"></script>
-		<script src="../../src/loading/AssetsList.js"></script>
-	</head>
-	<body>
-		<h1>
-			Look at console output
-		</h1>
-		<p>
-			We`ve subscribed to FlashJS`s onEnterFrame without particular stage. This helps to share RequestAnimationFrame between FlashJS and other libraries (tween engines and so on).
-		</p>
-	</body>
-	<script>
-		flash.subscribeToEnterFrame(function(){
-            console.log('Request animation frame at ' + new Date().getTime() + ' timestamp.');
-		});
-	</script>
+<head>
+    <script src="../../src/utils/CoreUtils.js"></script>
+    <script src="../../src/geom/Matrix2D.js"></script>
+    <script src="../../src/display-canvas/DisplayObject.js"></script>
+    <script src="../../src/display-canvas/DisplayList.js"></script>
+    <script src="../../src/display-canvas/Stage.js"></script>
+    <script src="../../src/display-canvas/SpriteSheet.js"></script>
+    <script src="../../src/display-canvas/SpriteAnimation.js"></script>
+    <script src="../../src/events/Event.js"></script>
+    <script src="../../src/events/TouchEvent.js"></script>
+    <script src="../../src/loading/AnimationLoader.js"></script>
+    <script src="../../src/loading/ImageLoader.js"></script>
+    <script src="../../src/media/Sound.js"></script>
+    <script src="../../src/loading/SoundLoader.js"></script>
+    <script src="../../src/loading/Loader.js"></script>
+    <script src="../../src/loading/AssetsList.js"></script>
+</head>
+<body>
+<h1>
+    Look at console output
+</h1>
+
+<p>
+    We`ve subscribed to FlashJS`s onEnterFrame without particular stage. This helps to share RequestAnimationFrame
+    between FlashJS and other libraries (tween engines and so on).
+</p>
+</body>
+<script>
+    flash.subscribeToEnterFrame(function () {
+        console.log('Request animation frame at ' + new Date().getTime() + ' timestamp.');
+    });
+</script>
 </html>

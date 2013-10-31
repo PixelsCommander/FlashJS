@@ -1,30 +1,84 @@
 {
-	"assetsData":[
-		{
-			"url":"../../assets/%scale%/actors/afro/",
-			"id":"player",
-			"width":207,
-			"height":240,
-			"framesTotal":33,
-            "fileNameNumbers":2,
-			"animations": {
-				"fly": {"startFrame":3, "endFrame":3, "interval":100, "looped":0, "makeFlip":0},
-				"jump": {"startFrame":0, "endFrame":3, "interval":50, "looped":0, "makeFlip":0},
-				"grab": {"startFrame":4, "endFrame":5, "interval":75, "looped":0, "makeFlip":0},
-				"runleft": {"startFrame":9, "endFrame":11, "interval":70, "looped":0, "makeFlip":0},
-				"runright": {"startFrame":6, "endFrame":8, "interval":70, "looped":0, "makeFlip":0},
-				"run": {"startFrame":0, "endFrame":0, "interval":50, "looped":0, "makeFlip":0},
-				"tornado": {"startFrame":12, "endFrame":18, "interval":200, "looped":1, "makeFlip":0},
-				"fall": {"startFrame":19, "endFrame":23, "interval":50, "looped":0, "makeFlip":0},
-				"verticaltornado": {"startFrame":24, "endFrame":30, "interval":50, "looped":0, "makeFlip":0}
-			}
-		},
-		{
-			"url":"../../assets/%scale%/actors/fish.png",
-			"id":"fish",
+    "assetsData": [
+        {
+            "url": "../../assets/%scale%/actors/afro/",
+            "id": "player",
+            "width": 207,
+            "height": 240,
+            "framesTotal": 33,
+            "fileNameNumbers": 2,
+            "animations": {
+                "fly": {
+                    "startFrame": 3,
+                    "endFrame": 3,
+                    "interval": 100,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "jump": {
+                    "startFrame": 0,
+                    "endFrame": 3,
+                    "interval": 50,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "grab": {
+                    "startFrame": 4,
+                    "endFrame": 5,
+                    "interval": 75,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "runleft": {
+                    "startFrame": 9,
+                    "endFrame": 11,
+                    "interval": 70,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "runright": {
+                    "startFrame": 6,
+                    "endFrame": 8,
+                    "interval": 70,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "run": {
+                    "startFrame": 0,
+                    "endFrame": 0,
+                    "interval": 50,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "tornado": {
+                    "startFrame": 12,
+                    "endFrame": 18,
+                    "interval": 200,
+                    "looped": 1,
+                    "makeFlip": 0
+                },
+                "fall": {
+                    "startFrame": 19,
+                    "endFrame": 23,
+                    "interval": 50,
+                    "looped": 0,
+                    "makeFlip": 0
+                },
+                "verticaltornado": {
+                    "startFrame": 24,
+                    "endFrame": 30,
+                    "interval": 50,
+                    "looped": 0,
+                    "makeFlip": 0
+                }
+            }
+        },
+        {
+            "url": "../../assets/%scale%/actors/fish.png",
+            "id": "fish",
             "horizontalFlip": true,
             "verticalFlip": true,
             "bothFlip": true
-		}
-	]
+        }
+    ]
 }

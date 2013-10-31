@@ -13,21 +13,21 @@ function testCSS(prop) {
 if (flash.cssTransformFunction === undefined) {
     if (testCSS('WebkitTransform')) {
         var browserTransformPrefix = ('webkitTransform');
-    } else if (testCSS('MozBoxSizing')){
+    } else if (testCSS('MozBoxSizing')) {
         var browserTransformPrefix = ('MozTransform');
-    } else if (/*@cc_on!@*/false || testCSS('msTransform')){
+    } else if (/*@cc_on!@*/false || testCSS('msTransform')) {
         var browserTransformPrefix = ('-ms-transform');
     }
 
-    flash.cssTransformFunction = function(angle, scalex, scaley){
+    flash.cssTransformFunction = function (angle, scalex, scaley) {
         //this.css(browserTransformPrefix , 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')');//this.angleCache = angle; this.scaleXCache = scalex;this.scaleYCache = scaley;
         this._node.style[browserTransformPrefix] = 'rotate(' + -angle + 'deg) scale(' + scalex + ',' + scaley + ')';
     }
 }
 
-(function(w) {
-    var DisplayObject = function(image, width, height, stage) {
-        if (typeof(image) === 'string'){
+(function (w) {
+    var DisplayObject = function (image, width, height, stage) {
+        if (typeof(image) === 'string') {
             this._image = document.createElement('img');
             this._image.src = image;
         } else if (image !== undefined) {
@@ -37,7 +37,7 @@ if (flash.cssTransformFunction === undefined) {
 
         this.init();
 
-        if (image !== undefined){
+        if (image !== undefined) {
             this._node.appendChild(this._image);
         }
 
@@ -45,7 +45,7 @@ if (flash.cssTransformFunction === undefined) {
             this.setImage(image, width, height);
         }
 
-        if (stage !== undefined){
+        if (stage !== undefined) {
             this.setStage(stage);
         }
     }
@@ -101,30 +101,30 @@ if (flash.cssTransformFunction === undefined) {
     p.onMouseOut = null;
     p.onTick = null;
 
-    p.init = function() {
+    p.init = function () {
         this.id = w.UID();
         this._node = document.createElement('div');
         this._node.id = this.id;
         this._node.style.position = 'absolute';
-        this._node.addEventListener('mousedown', function(event){
+        this._node.addEventListener('mousedown', function (event) {
             event.preventDefault ? event.preventDefault() : event.returnValue = false;
         });
-        this._node.addEventListener('touchdown', function(event){
+        this._node.addEventListener('touchdown', function (event) {
             event.preventDefault ? event.preventDefault() : event.returnValue = false;
         });
     }
 
-    p.setZIndex = function(zIndex){
+    p.setZIndex = function (zIndex) {
         this._node.style.zIndex = zIndex;
     }
 
-    p.getZIndex = function(){
+    p.getZIndex = function () {
         return this.zindexCache;
     }
 
-    p.setWidth = function(width){
+    p.setWidth = function (width) {
         this._originalWidth = width;
-        if (this._stage !== undefined){
+        if (this._stage !== undefined) {
             this._width = this._originalWidth / this._stage.pixelScale;
         } else {
             this._width = this._originalWidth;
@@ -133,15 +133,15 @@ if (flash.cssTransformFunction === undefined) {
         this._node.style.width = this._width + 'px';
     }
 
-    p.getWidth = function(){
+    p.getWidth = function () {
         return this._width;
     }
 
     defineGetterSetter(p, 'width', p.getWidth, p.setWidth);
 
-    p.setHeight = function(height){
+    p.setHeight = function (height) {
         this._originalHeight = height;
-        if (this._stage !== undefined){
+        if (this._stage !== undefined) {
             this._height = this._originalHeight / this._stage.pixelScale;
         } else {
             this._height = this._originalHeight;
@@ -150,31 +150,31 @@ if (flash.cssTransformFunction === undefined) {
         this._node.style.height = this._height + 'px';
     }
 
-    p.getHeight = function(){
+    p.getHeight = function () {
         return this._height;
     }
 
     defineGetterSetter(p, 'height', p.getHeight, p.setHeight);
 
-    p.setStage = function(stage){
+    p.setStage = function (stage) {
         this._stage = stage;
         this.refreshDimensions();
         this.refreshHalfDimensions();
     }
 
-    p.getStage = function(){
+    p.getStage = function () {
         return this._stage;
     }
 
     defineGetterSetter(p, 'stage', p.getStage, p.setStage);
 
-    p.setImage = function(image, width, height){
+    p.setImage = function (image, width, height) {
         this.width = width || image.width;
         this.height = height || image.height;
 
         this._node.removeChild(this._image);
 
-        if (typeof(image) === 'string'){
+        if (typeof(image) === 'string') {
             this._image = document.createElement('img');
             this._image.src = image;
             this._node.appendChild(this._image);
@@ -185,28 +185,28 @@ if (flash.cssTransformFunction === undefined) {
         }
     }
 
-    p.refreshHalfDimensions = function(){
+    p.refreshHalfDimensions = function () {
         this._halfHeight = this._height / 2;
         this._halfWidth = this._width / 2;
     }
 
-    p.refreshDimensions = function(){
+    p.refreshDimensions = function () {
         this._height = this._originalHeight / this._stage.pixelScale;
         this._width = this._originalWidth / this._stage.pixelScale;
     }
 
-    p.isVisible = function() {
+    p.isVisible = function () {
         return this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0;
     }
 
-    p.getStage = function(){
-        if (this.canvas !== undefined){
+    p.getStage = function () {
+        if (this.canvas !== undefined) {
             return this;
         }
         var stage = undefined;
         var o = this.parent;
 
-        while(stage === undefined && o !== undefined){
+        while (stage === undefined && o !== undefined) {
             stage = o.stage;
             o = this.parent;
         }
@@ -215,20 +215,20 @@ if (flash.cssTransformFunction === undefined) {
     }
 
     //X, Y  getters / setters
-    p.xGet = function(){
+    p.xGet = function () {
         return this.xCache;//parseInt(this._node.style['left']);
     }
-    p.xSet = function(x){
+    p.xSet = function (x) {
         this.xCache = x;
-        this._node.style['left']= (x * this._stage.pixelScale || 1) + 'px';
+        this._node.style['left'] = (x * this._stage.pixelScale || 1) + 'px';
         /*if (flash.stage != undefined && this === flash.stage.cameraTarget){
          flash.stage.x = (-x + flash.stage.width * 0.5) * flash.stage.scaleX;
          }*/
     }
-    p.yGet = function(){
+    p.yGet = function () {
         return this.yCache;//parseInt(this._node.style['top']);
     }
-    p.ySet = function(y){
+    p.ySet = function (y) {
         this.yCache = y;
         this._node.style['top'] = (y * this.stage.pixelScale || 1) + 'px';
         /*if (flash.stage != undefined && this === flash.stage.cameraTarget){
@@ -237,56 +237,56 @@ if (flash.cssTransformFunction === undefined) {
     }
 
     //Width and height getters / setters
-    p.widthGet = function(){
+    p.widthGet = function () {
         return parseInt(this._node.style.width);
     }
-    p.widthSet = function(x){
+    p.widthSet = function (x) {
         this._node.style.width = x + 'px';
     }
-    p.heightGet = function(){
+    p.heightGet = function () {
         return parseInt(this._node.style.height);
     }
-    p.heightSet = function(x){
+    p.heightSet = function (x) {
         this._node.style.height = x + 'px';
     }
 
     //Rotation getters / setters. Rotation setter uses flash.display.rotationFunction that is choosed once for flash.display.Stage
-    p.rotationGet = function(){
+    p.rotationGet = function () {
         this.angleCache = this.angleCache != undefined ? this.angleCache : 0;
         return this.angleCache;
     }
 
-    p.rotationSet = function(angle){
+    p.rotationSet = function (angle) {
         this.angleCache = angle;
         this.refreshCSSTransform();
     }
 
     //Opacity
-    p.alphaGet = function(){
+    p.alphaGet = function () {
         return this._node.style['opacity'];
     }
-    p.alphaSet = function(x){
+    p.alphaSet = function (x) {
         this._node.style['opacity'] = x;
     }
 
     //Fill color
-    p.fillColorGet = function(){
+    p.fillColorGet = function () {
         return this._node.style['backgroundColor'];
     }
-    p.fillColorSet = function(x){
+    p.fillColorSet = function (x) {
         this._node.style['backgroundColor'] = x;
     }
 
     //Visible
-    p.visibleGet = function(){
-        if (this._node.style['display'] === 'none'){
+    p.visibleGet = function () {
+        if (this._node.style['display'] === 'none') {
             return false;
         } else {
             return true;
         }
     }
-    p.visibleSet = function(x){
-        if (x === true){
+    p.visibleSet = function (x) {
+        if (x === true) {
             this._node.style['display'] = 'inline';
         } else {
             this._node.style['display'] = 'none';
@@ -294,32 +294,32 @@ if (flash.cssTransformFunction === undefined) {
     }
 
     //ScaleX
-    p.scaleXGet = function(){
+    p.scaleXGet = function () {
         return this.scaleXCache;
     }
 
-    p.scaleXSet = function(x){
+    p.scaleXSet = function (x) {
         this.scaleXCache = x;
         this.refreshCSSTransform();
     }
 
     //ScaleY
-    p.scaleYGet = function(){
+    p.scaleYGet = function () {
         return this.scaleYCache;
     }
 
-    p.scaleYSet = function(y){
+    p.scaleYSet = function (y) {
         this.scaleYCache = y;
         this.refreshCSSTransform();
     }
 
-    p.refreshCSSTransform = function(){
+    p.refreshCSSTransform = function () {
         flash.cssTransformFunction.call(this, this.angleCache, this.scaleXCache, this.scaleYCache);
     }
 
     //Method for advanced users to setup scale and rotation CSS properties at once,
     //it would speed up your app in case you are using all transformations
-    p.setTransformAtOnce = function(angle, scaleX, scaleY){
+    p.setTransformAtOnce = function (angle, scaleX, scaleY) {
         this.angleCache = angle;
         this.scaleX = scaleX;
         this.scaleY = scaleY
@@ -327,7 +327,8 @@ if (flash.cssTransformFunction === undefined) {
     }
 
     //numChildren getter
-    defineGetterSetter(p, "numChildren", p.numChildrenGet, function(x){});
+    defineGetterSetter(p, "numChildren", p.numChildrenGet, function (x) {
+    });
 
     //X, Y  getters / setters
     defineGetterSetter(p, "x", p.xGet, p.xSet);
@@ -356,14 +357,14 @@ if (flash.cssTransformFunction === undefined) {
     //zIndex
     defineGetterSetter(p, "zIndex", p.getZIndex, p.setZIndex);
 
-    p.addEventListener = function(type, handler){
+    p.addEventListener = function (type, handler) {
         this._node.addEventListener(type, handler);
     }
 
-    DisplayObject.fromJSON = function(object, assets){
-        try{
+    DisplayObject.fromJSON = function (object, assets) {
+        try {
             var tempObject = new DisplayObject(assets.items[object.asset].data);
-        } catch(e) {
+        } catch (e) {
             throw new Error('Can`t find asset ' + object.asset + ' in list');
         }
 

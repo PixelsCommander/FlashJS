@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<script src="../../src/utils/CoreUtils.js"></script>
-		<script src="../../src/geom/Matrix2D.js"></script>
-		<script src="../../src/display-canvas/DisplayObject.js"></script>
-		<script src="../../src/display-canvas/DisplayList.js"></script>
-		<script src="../../src/display-canvas/Stage.js"></script>
-		<script src="../../src/display-canvas/SpriteSheet.js"></script>
-		<script src="../../src/display-canvas/SpriteAnimation.js"></script>
-		<script src="../../src/events/Event.js"></script>
-		<script src="../../src/events/TouchEvent.js"></script>
-		<script src="../../src/loading/AnimationLoader.js"></script>
-		<script src="../../src/loading/ImageLoader.js"></script>
-		<script src="../../src/media/Sound.js"></script>
-        <script src="../../src/media/APISound.js"></script>
-		<script src="../../src/loading/SoundLoader.js"></script>
-		<script src="../../src/loading/Loader.js"></script>
-		<script src="../../src/loading/AssetsList.js"></script>
-	</head>
-	<body>
-		<canvas height="auto" width="100%" id="gameCanvas" style="width:100%; height:100%;">
-		</canvas>
-	</body>
-	<script>
-		var loadCallback = function(){
+<head>
+    <script src="../../src/utils/CoreUtils.js"></script>
+    <script src="../../src/geom/Matrix2D.js"></script>
+    <script src="../../src/display-canvas/DisplayObject.js"></script>
+    <script src="../../src/display-canvas/DisplayList.js"></script>
+    <script src="../../src/display-canvas/Stage.js"></script>
+    <script src="../../src/display-canvas/SpriteSheet.js"></script>
+    <script src="../../src/display-canvas/SpriteAnimation.js"></script>
+    <script src="../../src/events/Event.js"></script>
+    <script src="../../src/events/TouchEvent.js"></script>
+    <script src="../../src/loading/AnimationLoader.js"></script>
+    <script src="../../src/loading/ImageLoader.js"></script>
+    <script src="../../src/media/Sound.js"></script>
+    <script src="../../src/media/APISound.js"></script>
+    <script src="../../src/loading/SoundLoader.js"></script>
+    <script src="../../src/loading/Loader.js"></script>
+    <script src="../../src/loading/AssetsList.js"></script>
+</head>
+<body>
+<canvas height="auto" width="100%" id="gameCanvas" style="width:100%; height:100%;">
+</canvas>
+</body>
+<script>
+    var loadCallback = function () {
 
-            assets.get('music').play();
-            setInterval(function(){
-                assets.get('wipe').play();
-            }, 1000);
-		}
+        assets.get('music').play();
+        setInterval(function () {
+            assets.get('wipe').play();
+        }, 1000);
+    }
 
-		var stage = new Stage('#gameCanvas');
-		var assets = new AssetsList({scale: stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", loadCallback);
-		assets.onProgress = function(arg){
-			//console.log(arg.toProceed);
-		}
-	</script>
+    var stage = new Stage('#gameCanvas');
+    var assets = new AssetsList({scale: stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", loadCallback);
+    assets.onProgress = function (arg) {
+        //console.log(arg.toProceed);
+    }
+</script>
 </html>

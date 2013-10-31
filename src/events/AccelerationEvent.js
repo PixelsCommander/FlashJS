@@ -6,11 +6,11 @@
  * Copyright (c) 2011 - 2012 pixelsresearch.com,
  */
 
-(function(w){
+(function (w) {
     if (w.DeviceMotionEvent !== undefined && w.flash.iOS === true) {
         w.flash.accelerometer = w.flash.accelerometer || {};
         w.flash.accelerometer.noiseBarrier = 0.2;
-        w.addEventListener('devicemotion', function(e) {
+        w.addEventListener('devicemotion', function (e) {
             w.flash.accelerometer.oldX = w.flash.accelerometer.x;
             w.flash.accelerometer.oldY = w.flash.accelerometer.y;
             w.flash.accelerometer.oldZ = w.flash.accelerometer.z;
@@ -27,16 +27,16 @@
             w.flash.accelerometer.noisyY = w.flash.accelerometer.deltaY > w.flash.accelerometer.noiseBarrier ? false : true;
             w.flash.accelerometer.noisyZ = w.flash.accelerometer.deltaZ > w.flash.accelerometer.noiseBarrier ? false : true;
 
-            if (window.orientation === -90 || window.parentOrientation === -90){
+            if (window.orientation === -90 || window.parentOrientation === -90) {
                 w.flash.accelerometer.y = w.flash.accelerometer.y * -1;
             }
 
-            if (window.orientation === 90 || window.parentOrientation === 90){
+            if (window.orientation === 90 || window.parentOrientation === 90) {
                 w.flash.accelerometer.x = w.flash.accelerometer.x * -1;
             }
         })
 
-        w.setOrientation = w.setOrientation || function(orientationArg){
+        w.setOrientation = w.setOrientation || function (orientationArg) {
             w.parentOrientation = orientationArg;
         }
 

@@ -1,26 +1,26 @@
 /*
-* Sound is a part of FlashJS engine
-*
-* http://flashjs.com
-*
-* Copyright (c) 2011 - 2012 pixelsresearch.com,
-*/
+ * Sound is a part of FlashJS engine
+ *
+ * http://flashjs.com
+ *
+ * Copyright (c) 2011 - 2012 pixelsresearch.com,
+ */
 
-(function(w){
-	var Sound = function(data){
-		if (data !== undefined) {
+(function (w) {
+    var Sound = function (data) {
+        if (data !== undefined) {
             this._audio = data;
         } else {
             this._audio = new Audio();
         }
         this.codec = 'mp3';
         this.loop = false;
-	}
+    }
 
-	var p = Sound.prototype;
+    var p = Sound.prototype;
 
-    p.load = function(){
-        if (this.URL === undefined){
+    p.load = function () {
+        if (this.URL === undefined) {
             throw new Error("Trying to load Sound without URL");
         }
 
@@ -30,7 +30,7 @@
         this._audio.preload = 'auto';
         this._audio.autoplay = false;
 
-        if ((this._audio).canPlayType("audio/mpeg")){
+        if ((this._audio).canPlayType("audio/mpeg")) {
             this.codec = 'mp3';
         } else if ((this._audio).canPlayType("audio/ogg; codecs=vorbis")) {
             this.codec = 'ogg';
@@ -48,7 +48,7 @@
         if (this.onload !== undefined) {
             var tempLoadHandler = this.onload;
 
-            this.onload = function(){
+            this.onload = function () {
                 tempLoadHandler();
                 this._audio.removeEventListener('canplaythrough', this.onload);
                 this._audio.removeEventListener('load', this.onload, false);
@@ -60,27 +60,27 @@
             this._audio.addEventListener('load', this.onload, false);
         }
 
-        if (w.flash.iOS === true){
+        if (w.flash.iOS === true) {
             this.onload();
         }
 
         this._audio.src = this.URL;
     }
 
-    p.changeCodecTo = function(codecType){
+    p.changeCodecTo = function (codecType) {
         this.URL = replaceAll(this.URL, 'mp3', codecType);
         this.URL = replaceAll(this.URL, 'ogg', codecType);
         this.URL = replaceAll(this.URL, 'wav', codecType);
     }
 
-	p.play = function(){
+    p.play = function () {
         if (flash.soundMuted === true) {
             return;
         }
         this._audio.loop = this.loop;
-        if (this._audio.paused){
-            if (this._audio.loop && this.codec === 'ogg'){
-                this._audio.addEventListener('ended', function() {
+        if (this._audio.paused) {
+            if (this._audio.loop && this.codec === 'ogg') {
+                this._audio.addEventListener('ended', function () {
                     this.currentTime = 0;
                     this.play();
                 }, false);
@@ -90,13 +90,13 @@
             var tempSound = this.clone();
             tempSound.play();
         }
-	}
+    }
 
-    p.stop = function(){
+    p.stop = function () {
         this._audio.stop();
     }
 
-    p.clone = function(){
+    p.clone = function () {
         var clonedAudio = new Audio();
         clonedAudio.src = this._audio.src;
         clonedAudio.loop = this.loop;
@@ -108,15 +108,15 @@
         return clonedSound;
     }
 
-    p.setVolume = function(volume){
+    p.setVolume = function (volume) {
         this._audio.volume = volume;
     }
 
-    p.getVolume = function(){
+    p.getVolume = function () {
         return this._audio.volume;
     }
 
     defineGetterSetter(p, 'volume', p.getVolume, p.setVolume);
 
-	w.flash.cloneToNamespaces(Sound, 'Sound');
+    w.flash.cloneToNamespaces(Sound, 'Sound');
 })(window);

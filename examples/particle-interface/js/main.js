@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
     var colors = [
         '#ffffff',
         '#eeeeee',
@@ -25,9 +25,9 @@ $(document).ready(function(){
     var colorNumber = 0;
     var top = 0;
 
-    for (var row = 0; row < 4; row++){
+    for (var row = 0; row < 4; row++) {
         var left = 0;
-        for (var column = 0; column < 5; column++){
+        for (var column = 0; column < 5; column++) {
             var item = $('<div class="box"></div>');
             $('.wrapper').append(item);
             item.css('background-color', colors[colorNumber]);
@@ -35,7 +35,7 @@ $(document).ready(function(){
             item.css('top', top + '%')
             item[0].oldLeft = item.css('left');
             item[0].oldTop = item.css('top');
-            item.on('webkitTransitionEnd', function(){
+            item.on('webkitTransitionEnd', function () {
                 restoreItemState(this);
             })
             colorNumber++;
@@ -44,15 +44,15 @@ $(document).ready(function(){
         top += 25;
     }
 
-    $('.box').on('mousedown', function(){
-        $(this).css('width','100%');
-        $(this).css('height','100%');
+    $('.box').on('mousedown', function () {
+        $(this).css('width', '100%');
+        $(this).css('height', '100%');
         $(this).css('z-index', '10000');
         $(this).css('left', '0px');
         $(this).css('top', '0px');
     })
 
-    function restoreItemState(element){
+    function restoreItemState(element) {
         element.style.top = element.oldTop;
         element.style.left = element.oldLeft;
         element.style.zIndex = 0;
@@ -62,37 +62,37 @@ $(document).ready(function(){
     }
 });
 
-(function(w){
+(function (w) {
 
-    function getRandomInt (min, max) {
+    function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    var Particle = function(){
-        var particle = new DisplayObject(assetList.get('particle' + getRandomInt(1,4)))
+    var Particle = function () {
+        var particle = new DisplayObject(assetList.get('particle' + getRandomInt(1, 4)))
         return particle;
     }
 
     p = Particle.prototype = new DisplayObject();
 
-    p.update = function(){
+    p.update = function () {
         this.x
     }
 
-    w.createParticle = function(e){
+    w.createParticle = function (e) {
         oldMouseX = mouseX;
         oldMouseY = mouseY;
         mouseX = e.offsetX;
         mouseY = e.offsetY;
-        mouseSpeedX =  mouseX - oldMouseX;
+        mouseSpeedX = mouseX - oldMouseX;
         mouseSpeedY = mouseY - oldMouseY;
 
-        if (particles.length <= particlesLimit){
+        if (particles.length <= particlesLimit) {
             var particle = new Particle();
             particles.push(particle);
         } else {
             particle = particles[currentParticle];
-            if (currentParticle < particlesLimit){
+            if (currentParticle < particlesLimit) {
                 currentParticle++;
             } else {
                 currentParticle = 0;
@@ -111,8 +111,8 @@ $(document).ready(function(){
         particle.speedY = mouseSpeedY;
     }
 
-    w.updateParticles = function(){
-        for (var i = 0; i < particles.length; i++){
+    w.updateParticles = function () {
+        for (var i = 0; i < particles.length; i++) {
             var particle = particles[i];
 
             particle.speedX = particle.speedX * particleAccX;
@@ -123,12 +123,12 @@ $(document).ready(function(){
         }
     }
 
-    w.addListeners = function(){
+    w.addListeners = function () {
         var mycanvas = $('#particlescanvas')[0];
 
         stage.onmousemove = createParticle;
         stage.onEnterFrame = updateParticles;
-        document.body.addEventListener('touchmove', function(e){
+        document.body.addEventListener('touchmove', function (e) {
             e.offsetX = e.pageX;
             e.offsetY = e.pageY;
             var event = w.flash.events.normalizeEvent(e);
@@ -137,7 +137,7 @@ $(document).ready(function(){
             createParticle(event);
         });
 
-        document.body.addEventListener('mousemove', function(e){
+        document.body.addEventListener('mousemove', function (e) {
             e.offsetX = e.pageX;
             e.offsetY = e.pageY;
             var event = w.flash.events.normalizeEvent(e);

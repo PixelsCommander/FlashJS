@@ -1,20 +1,20 @@
-(function(w){
-	var Game = function(){
-		this.stage = new Stage('#gameCanvas');
-		this.assets = new AssetsList({scale: this.stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", this.loadCallback.bind(this));
-		
-		this.assets.onProgress = function(arg){
-			console.log(arg.percentLeft + '% loaded');
-		}	
-	}
+(function (w) {
+    var Game = function () {
+        this.stage = new Stage('#gameCanvas');
+        this.assets = new AssetsList({scale: this.stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", this.loadCallback.bind(this));
 
-	p = Game.prototype;
+        this.assets.onProgress = function (arg) {
+            console.log(arg.percentLeft + '% loaded');
+        }
+    }
 
-	p.loadCallback = function(){
-		var player = new SpriteAnimation(this.assets.get('player'));
-		player.setAnimation('tornado', true);
-		this.stage.addChild(player);	
-	}
+    p = Game.prototype;
 
-	w.Game = Game;
+    p.loadCallback = function () {
+        var player = new SpriteAnimation(this.assets.get('player'));
+        player.setAnimation('tornado', true);
+        this.stage.addChild(player);
+    }
+
+    w.Game = Game;
 })(window)

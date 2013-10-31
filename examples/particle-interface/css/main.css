@@ -93,22 +93,6 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ==========================================================================
    Helper classes
    ========================================================================== */
@@ -221,9 +205,9 @@ textarea {
 }
 
 @media print,
-       (-o-min-device-pixel-ratio: 5/4),
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 120dpi) {
+(-o-min-device-pixel-ratio: 5/4),
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 120dpi) {
     /* Style adjustments for high resolution devices */
 }
 
@@ -256,7 +240,6 @@ textarea {
     /*
      * Don't show links for images, or javascript/internal links
      */
-
     .ir a:after,
     a[href^="javascript:"]:after,
     a[href^="#"]:after {
@@ -299,7 +282,7 @@ textarea {
     }
 }
 
-html,body{
+html, body {
     width: 100%;
     height: 100%;
 }
@@ -317,7 +300,9 @@ body {
     font-size: 0;
 }
 
-.clearfix{ zoom: 1; }
+.clearfix {
+    zoom: 1;
+}
 
 .wrapper {
     width: 100%;
