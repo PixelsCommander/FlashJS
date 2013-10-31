@@ -21,24 +21,19 @@
 <body>
 <actionscript width="200px" height="200px" scaletoscreen="false">
     var loadCallback = function(){
-    for (var k = 0; k < 4; k++){
-    for (var i = 0; i < 4; i++){
-    var fish = new DisplayObject(assets.get('fish'));
-    stage.addChild(fish);
-    fish.x = fish.width * i;
-    fish.y = fish.height * k;
-    }
-    }
+        for (var k = 0; k < 4; k++){
+            for (var i = 0; i < 4; i++){
+                var fish = new DisplayObject(assets.get('fish'));
+                stage.addChild(fish);
+                fish.x = fish.width * i;
+                fish.y = fish.height * k;
+            }
+        }
 
-    for (var k = 0; k < 100; k++){
-    var player = new SpriteAnimation(assets.get('player'));
-    player.setAnimation('tornado', true);
-    stage.addChild(player);
+        var player = new SpriteAnimation(assets.get('player'));
+        player.setAnimation('tornado', true);
+        stage.addChild(player);
     }
-
-
-    }
-
 
     var assets = new AssetsList({scale: stage.pixelScale, startFrame: 1}, "./assets/main-assets.json", loadCallback);
 </actionscript>
