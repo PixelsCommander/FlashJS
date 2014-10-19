@@ -1,7 +1,7 @@
 FLASH JS
 ========
 
-<a href="http://pixelscommander.com/polygon/skate/">See it in action</a>
+<a href="http://pixelscommander.com/polygon/skateboarding/">See it in action</a>
 
 FlashJS is JavaScript graphics and game development engine with API similar to Flash one.
 It`s HTML5 game development tool, based on verified for years Flash methodology.
